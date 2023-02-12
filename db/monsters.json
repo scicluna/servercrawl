@@ -1,0 +1,12 @@
+[
+    {
+        "id": 0,
+        "monster":{
+            "name": "testMonster",
+            "attacks":["testAttack"],
+            "hp": 10,
+            "armor": 1,
+            "img": "placeholder.jpg"
+        }
+    }
+]

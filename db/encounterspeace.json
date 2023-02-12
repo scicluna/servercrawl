@@ -1,0 +1,11 @@
+[
+    {
+        "id": 0,
+        "encounter":{
+            "name": "testPeace",
+            "type": "shop",
+            "shopInventory": ["potion", "potion"],
+            "description": "You come across a strange store"
+        }
+    }
+]
