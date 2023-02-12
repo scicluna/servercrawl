@@ -1,9 +1,11 @@
 [
     {
         "id": 0,
-        "monster":{
+        "monster": {
             "name": "testMonster",
-            "attacks":["testAttack"],
+            "attacks": [
+                "testAttack"
+            ],
             "hp": 10,
             "armor": 1,
             "img": "placeholder.jpg"

@@ -2,14 +2,14 @@
     {
         "id": 0,
         "encounter": {
-            "name": "testPeace",
-            "type": "shop",
-            "options": [],
-            "shopInventory": [
-                "potion",
-                "potion"
+            "name": "post peace",
+            "type": "dialogue",
+            "options": [
+                "woah",
+                "cool"
             ],
-            "description": "You come across a strange store"
+            "shopInventory": [],
+            "description": "Favorite word?"
         }
     }
 ]

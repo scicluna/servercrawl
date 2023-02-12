@@ -1,10 +1,10 @@
+const admin = require("../server")
 const express = require("express")
 const encounters = express.Router()
 const fs = require("fs")
-const path = require("path")
 const encountersfightJSON = require("../db/encountersfight.json")
 const encounterspeaceJSON = require("../db/encounterspeace.json")
-const admin = true
+
 
 //When encounters is fetched. Grab the encounters json
 encounters.get('/fight', (req,res)=>{
@@ -71,11 +71,11 @@ encounters.delete('/fight/:id', (req, res) =>{
 
     let deleteIndex;
     encountersfightJSON.forEach((json, i)=>{
-        if (req.params.id === json.id){
+        if (req.params.id == json.id){
             deleteIndex = i
         }
     })
-    if(deleteIndex === null) return res.send("ID does not exist")
+    if(deleteIndex === undefined) return res.send("ID does not exist")
 
     encountersfightJSON.splice(deleteIndex, 1)
     
@@ -91,11 +91,11 @@ encounters.delete('/peace/:id', (req, res) =>{
 
     let deleteIndex;
     encounterspeaceJSON.forEach((json, i)=>{
-        if (req.params.id === json.id){
+        if (req.params.id == json.id){
             deleteIndex = i
         }
     })
-    if(deleteIndex == null) return res.send("ID does not exist")
+    if(deleteIndex === undefined) return res.send("ID does not exist")
 
     console.log(deleteIndex)
 

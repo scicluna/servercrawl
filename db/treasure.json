@@ -1,7 +1,9 @@
 [
     {
         "id": 0,
-        "item name" : "potion",
-        "category" : "testTreasure"
+        "item": {
+            "itemName": "potion",
+            "itemCategory": "testTreasure"
+        }
     }
 ]

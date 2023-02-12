@@ -1,8 +1,10 @@
 [
     {
         "id": 0,
-        "room name": "testRoom",
-        "battle percent": 50,
-        "background": "placeholder.jpg"
+        "room": {
+            "roomName": "testRoom",
+            "battlePercent": 50,
+            "background": "placeholder.jpg"
+        }
     }
 ]
