@@ -1,9 +1,13 @@
 [
     {
         "id": 0,
-        "encounter":{
+        "encounter": {
             "name": "testEncounter",
-            "monsters":["testMonster", "testMonster", "testMonster"],
+            "monsters": [
+                "testMonster",
+                "testMonster",
+                "testMonster"
+            ],
             "treasureType": "testTreasure",
             "treasureAmount": 1
         }
