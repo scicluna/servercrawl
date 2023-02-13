@@ -19,7 +19,7 @@ encounters.post('/fight', (req, res)=>{
     if (!admin) return
     const {name, monsters, treasureType, treasureAmount} = req.body
 
-    if (!name || !monsters || !treasureType || !treasureAmount) return res.send("Insufficient")
+    if (!name || !monsters || !treasureType || !treasureAmount) return res.json("Insufficient")
 
     const newFight = 
     {

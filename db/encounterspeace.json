@@ -11,5 +11,15 @@
             "shopInventory": [],
             "description": "Favorite word?"
         }
+    },
+    {
+        "id": 1,
+        "encounter": {
+            "name": "dasdas",
+            "type": "dasdsa",
+            "options": "dasdasd",
+            "shopInventory": "asdasd",
+            "description": "asdasdsa"
+        }
     }
 ]

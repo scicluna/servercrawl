@@ -11,5 +11,14 @@
             "treasureType": "testTreasure",
             "treasureAmount": 1
         }
+    },
+    {
+        "id": 1,
+        "encounter": {
+            "name": "sdfdsf",
+            "monsters": "sdfsd",
+            "treasureType": "fsdfsd",
+            "treasureAmount": "dsfsdf"
+        }
     }
 ]

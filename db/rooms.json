@@ -6,5 +6,13 @@
             "battlePercent": 50,
             "background": "placeholder.jpg"
         }
+    },
+    {
+        "id": 1,
+        "room": {
+            "roomName": "testRoom",
+            "battlePercent": "45",
+            "background": "placeholder.jpg"
+        }
     }
 ]

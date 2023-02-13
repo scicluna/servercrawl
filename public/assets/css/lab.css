@@ -1,0 +1,55 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url("");
+    background-size: 100vw 100vh;
+    background-color: rgb(67, 66, 66);
+    color: rgba(255, 255, 255, 0.884);
+    font-family: 'Mukta', sans-serif;
+}
+
+a{
+    color:red;
+    text-decoration: none;
+}
+
+h4{
+    cursor: pointer;
+}
+
+p{
+    margin:0;
+    padding-left:15px;
+}
+
+.navbar{
+    height:7vh;
+}
+
+.formcontainer{
+    height:93vh;
+}
+
+.inputcontainer{
+    position:relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    padding:15px;
+    text-align: left;
+}
+
+.input{
+    font-size:2rem;
+    width:30vw;
+}
+
+.inputlabel{
+    position:absolute;
+    left: 65vw;
+}
