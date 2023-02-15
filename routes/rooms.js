@@ -29,8 +29,7 @@ rooms.post('/', (req, res)=>{
     fs.writeFile("./db/rooms.json", JSON.stringify(roomsJSON, null, 4), (err)=>{
         if (err) throw err
        })
-    console.log("A new room exists to find")
-    res.json(roomsJSON)
+    res.json("A new room exists to find")
 })
 
 rooms.delete('/:id', (req, res)=>{

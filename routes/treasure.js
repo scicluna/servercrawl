@@ -28,8 +28,7 @@ treasure.post('/', (req, res)=>{
     fs.writeFile("./db/treasure.json", JSON.stringify(treasureJSON, null, 4), (err)=>{
         if (err) throw err
        })
-    console.log("There is now more treasure to find")
-    res.json(treasureJSON)
+    res.json("There is now more treasure to find")
 })
 
 treasure.delete('/:id', (req, res)=>{

@@ -31,8 +31,7 @@ monsters.post('/', (req, res)=>{
     fs.writeFile("./db/monsters.json", JSON.stringify(monstersJSON, null, 4), (err)=>{
         if (err) throw err
        })
-    console.log("A new monster has entered the dungeon")
-    res.json(monstersJSON)
+    res.json("A new monster has entered the dungeon")
 })
 
 monsters.delete('/:id', (req, res)=>{

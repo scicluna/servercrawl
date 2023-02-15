@@ -1,5 +1,6 @@
 const options = document.querySelectorAll(".optionbtn")
 const formContainer = document.querySelector(".formcontainer")
+const messageHolder = document.querySelector(".message")
 let pickedOption;
 
 options.forEach(option=>{
@@ -7,6 +8,7 @@ options.forEach(option=>{
 })
 
 function buildForm(e){
+    messageHolder.innerText=""
     pickedOption = e.target.innerText
     switch(pickedOption){
         case 'Fight Encounter': fightForm()
@@ -51,8 +53,10 @@ function submitBtn(){
 
     newDiv.classList.add("inputcontainer")
     newBtn.classList.add("submitbtn")
+    newBtn.classList.add("btn")
+    newBtn.classList.add("btn-secondary")
 
-    newBtn.innerText = "submit"
+    newBtn.innerText = "SUBMIT"
     newBtn.addEventListener("click", createEntry)
 
     newDiv.appendChild(newBtn)
@@ -110,7 +114,7 @@ function createEntry(e){
       })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
+            messageHolder.innerText = data
         })
 
 
@@ -141,9 +145,9 @@ function peaceForm(){
 function monsterForm(){
     formContainer.innerHTML = ''
     newFormInput("name")
-    newFormInput("attacks")
     newFormInput("hp")
-    newFormInput("armor")
+    newFormInput("atk")
+    newFormInput("def")
     newFormInput("img")
     submitBtn()
 }

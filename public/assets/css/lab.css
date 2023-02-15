@@ -31,7 +31,11 @@ p{
 }
 
 .formcontainer{
-    height:93vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height:80vh;
 }
 
 .inputcontainer{
@@ -45,11 +49,19 @@ p{
 }
 
 .input{
+    position: relative;
     font-size:2rem;
     width:30vw;
 }
 
 .inputlabel{
     position:absolute;
-    left: 65vw;
+    left: 32vw;
+}
+
+.message{
+    display: flex;
+    justify-content: center;
+    color:rgba(255, 0, 0, 0.661);
+    font-size: 2rem;
 }

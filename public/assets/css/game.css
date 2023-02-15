@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(48, 48, 48);
+    color: rgba(255, 255, 255, 0.777);
+    font-family: 'Mukta', sans-serif;
+    overflow: hidden;
+}
+
+.gamescreen{
+    margin:20px;
+    width:85vw;
+    height:85vh;
+    background-color:rgba(79, 84, 84, 0.614);
+}
+
+.gamearea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:100vw
+}
+
+.foot{
+    background-color:rgba(79, 84, 84, 0.614);
+    height:5vh;
+}

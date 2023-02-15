@@ -15,10 +15,10 @@
     {
         "id": 1,
         "encounter": {
-            "name": "sdfdsf",
-            "monsters": "sdfsd",
-            "treasureType": "fsdfsd",
-            "treasureAmount": "dsfsdf"
+            "name": "dsad",
+            "monsters": ["testMonster"],
+            "treasureType": "asdasd",
+            "treasureAmount": "2"
         }
     }
 ]

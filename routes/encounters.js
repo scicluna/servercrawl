@@ -21,6 +21,8 @@ encounters.post('/fight', (req, res)=>{
 
     if (!name || !monsters || !treasureType || !treasureAmount) return res.json("Insufficient")
 
+    if (!Number.isInteger(parseInt(treasureAmount))) return res.json("Treasure amount must be a number")
+
     const newFight = 
     {
         id: encountersfightJSON.length, //.length instead of .length -1, because we haven't pushed it in yet
@@ -36,7 +38,7 @@ encounters.post('/fight', (req, res)=>{
     fs.writeFile("./db/encountersfight.json", JSON.stringify(encountersfightJSON, null, 4), (err)=>{
         if (err) throw err
        })
-    res.json(encountersfightJSON)
+    res.json("A new encounter has been added")
 })
 
 encounters.post('/peace', (req, res)=>{
@@ -58,12 +60,10 @@ encounters.post('/peace', (req, res)=>{
     }
     encounterspeaceJSON.push(newPeace)
 
-    console.log(encounterspeaceJSON)
-
     fs.writeFile("./db/encounterspeace.json", JSON.stringify(encounterspeaceJSON, null, 4), (err)=>{
         if (err) throw err
        })
-    res.json(encounterspeaceJSON)
+    res.json("A new encounter has been added")
 })
 
 encounters.delete('/fight/:id', (req, res) =>{
