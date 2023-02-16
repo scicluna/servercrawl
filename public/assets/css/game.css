@@ -28,4 +28,12 @@ body{
 .foot{
     background-color:rgba(79, 84, 84, 0.614);
     height:5vh;
+    position:absolute;
+    bottom:0;
+}
+
+.gamecontent {
+    display:flex;
+    height:100%;
+    width:100%;
 }

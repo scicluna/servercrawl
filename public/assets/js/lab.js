@@ -127,7 +127,7 @@ function fightForm(){
     formContainer.innerHTML = ''
     newFormInput("name")
     newFormInput("monsters")
-    newFormInput("treasureType")
+    newFormInput("treasureRarity")
     newFormInput("treasureAmount")
     submitBtn()
 }
@@ -163,6 +163,12 @@ function roomForm(){
 function treasureForm(){
     formContainer.innerHTML = ''
     newFormInput("itemName")
-    newFormInput("itemCategory")
+    newFormInput("itemType")
+    newFormInput("itemRarity")
+    newFormInput("itemAtk")
+    newFormInput("itemDef")
+    newFormInput("itemDmg")
+    newFormInput("itemHeal")
+    newFormInput("itemStatus")
     submitBtn()
 }

@@ -1,5 +1,4 @@
-import { items } from "./item.js"
-const [potion, knife] = items
+import { Item } from "./item.js"
 
 export class Player{
     constructor(name, maxHp, atk, def){
@@ -14,8 +13,8 @@ export class Player{
         this.hp = this.maxHp
         this.level = 1
         this.inventory = [
-            potion,
-            knife
+            new Item("potion", "consumable", "common", null, null, null, 10),
+            new Item("knife", "weapon", "common", 1)
         ]
         this.totalAtk = this.atk
         this.totalDef = this.def

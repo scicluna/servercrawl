@@ -1,7 +1,6 @@
 import { Player } from "./classes/player.js"
 import { Monster } from "./classes/monster.js"
-import { items } from "./classes/item.js"
-const [potion, knife] = items
+import { Item } from "./classes/item.js"
 
 const contentArea = document.querySelector(".gamecontent")
 const ROUTELENGTH = 10
@@ -12,6 +11,8 @@ let pointer = 0
 async function init(){
     await rooms()
     await monsters()
+    await treasure()
+    delve()
 }
 init()
 
@@ -62,10 +63,11 @@ const hero = new Player("Hero", 20, 2, 0)
 
 //Handle Monster Generation (array of monster objects based on peace/fight from route and snagged from the database... and converted to monster class?)
 async function monsters(){
-    const monsters = generateMonsters(ROUTELENGTH)
+    const monsters = generateMonsters()
     const formattedMonsters = await jsonMonsters(monsters)
     const finalMonsters = classedMonsters(formattedMonsters)
-    console.log(finalMonsters)
+    routeMonsters = finalMonsters
+    console.log(routeMonsters)
 }
 
 function generateMonsters(){
@@ -99,9 +101,9 @@ async function jsonMonsters(monsters){ //transform arrays of strings into arrays
 
 function classedMonsters(monsterarray){
     const classyMonsters = monsterarray.map(monstergroup=>{
-        if (monstergroup == null) return
+        if (monstergroup == null) return null
         const monsterGroupWithClasses = monstergroup.map(monster=>{
-                return new Monster(monster?.name, monster?.hp, monster?.atk, monster?.def, monster?.img)
+            return new Monster(monster?.name, monster?.hp, monster?.atk, monster?.def, monster?.img)
         })
         return monsterGroupWithClasses
     })
@@ -109,10 +111,71 @@ function classedMonsters(monsterarray){
 }
 
 //Handle Treasure Generation (array of treasure objects snagged from the database... and converted to item class?)
+async function treasure(){
+    const treasureParams = generateTreasureParams()
+    const generatedTreasure = await generateTreasure(treasureParams)
+    const finalTreasure = classedTreasure(generatedTreasure)
+
+    console.log(finalTreasure)
+}
+
+function generateTreasureParams(){
+    const generatedTreasure = []
+    route.forEach(room=>{
+        const rarity = room.fight?.encounter.treasureRarity
+        const quantity = room.fight?.encounter.treasureAmount
+        if (rarity && quantity) {generatedTreasure.push({rarity, quantity})}
+        else generatedTreasure.push(null)
+    })
+    return generatedTreasure
+}
+
+async function generateTreasure(params){
+    const response = await fetch('/api/treasure')
+    const treasureJson = await response.json()
+
+    const jsonItems = params.map(param=>{
+        if (param == null) return null
+        const {rarity, quantity} = param
+        const drops = []
+        for (let i=0; i<quantity; i++){
+            treasureJson.forEach(json => {
+                if (rarity == json.item.itemRarity){
+                    drops.push(json.item)
+                }
+            })
+        }
+        return drops
+    })
+    return jsonItems
+}
+
+function classedTreasure(arrayOfArrays){
+    const classedItems = arrayOfArrays.map(jsonarray=>{
+        if(jsonarray == null) return null
+        const classifedItems = jsonarray.map(json=>{
+            return new Item(json?.itemName, json?.itemType, json?.itemRarity, json?.itemAtk, json?.itemDef, json?.itemDmg, json?.itemHeal, json?.itemStatus)
+        })
+        return classifedItems
+    })
+    return classedItems
+}
+//Route Gameplay to Either Battle or Peace
+function delve(){
+    if (route[pointer].fight) fightStart()
+    if (route[pointer].peace) peaceStart()
+}
 
 //Handle Gameplay (Battle)
+function fightStart(){
+    generateFightUi()
+}
 
-//Handle Gameplay (Peace) Dialogue
+function generateFightUi(){
+    
+}
 
-//Handle Gameplay (Peace) Shop
-
+//Handle Gameplay (Peace) 
+function peaceStart(){
+    console.log("peace")
+}

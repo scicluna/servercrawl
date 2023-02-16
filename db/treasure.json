@@ -3,7 +3,13 @@
         "id": 0,
         "item": {
             "itemName": "potion",
-            "itemCategory": "testTreasure"
+            "itemType": "consumable",
+            "itemRarity": "common",
+            "itemAtk": null,
+            "itemDef": null,
+            "itemDmg": null,
+            "itemHeal": 10,
+            "itemStatus": null
         }
     }
 ]

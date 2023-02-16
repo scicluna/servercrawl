@@ -5,5 +5,10 @@ export class Monster{
         this.atk = atk
         this.def = def
         this.img = img
+        this.reset()
+    }
+
+    reset(){
+        this.hp = this.maxHp
     }
 }
