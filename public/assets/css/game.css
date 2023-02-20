@@ -34,6 +34,83 @@ body{
 
 .gamecontent {
     display:flex;
+    flex-direction: column;
+    justify-content: space-between;
     height:100%;
     width:100%;
+}
+
+.enemyspace{
+    display: flex;
+    justify-content: space-around;
+    height:40vh;
+    margin: 15px;
+}
+
+.playerspace{
+    display:flex;
+    justify-content: center;
+    height: 40vh;
+    margin: 15px;
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25vw;
+    background-color: rgba(250, 235, 215, 0);
+    border-style: none;
+}
+
+.playerSprite,
+.monsterSprite{
+    height: 20vh;
+    width: 20vw;
+}
+
+.monsterSprite{
+    width:15vw;
+    padding: 5px;
+}
+
+.playerHealthShell,
+.monsterHealthShell{
+    height:4vh;
+    width: 100%;
+}
+
+.monsterHealthShell{
+    margin-top: 15px;
+}
+
+.playerHealth,
+.monsterHealth {
+    --hpfill: 100%;
+    width: var(--hpfill);
+    height:100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    background-color: red;
+    color:black;
+    font-weight: bolder;
+    transition: width ease 1s;
+}
+
+.playeroptions{
+    display: flex;
+    width:95%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.playerAttack, .playerItem{
+    cursor: pointer;
+    margin:5px;
+}
+
+/*Will have to do until i learn how to style this better*/
+.target{
+    border: 2px dashed black;
 }

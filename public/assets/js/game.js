@@ -16,7 +16,6 @@ async function init(){
 }
 init()
 
-
 //Generate Rooms
 async function rooms(){
     const rooms = await generateRooms(ROUTELENGTH)
@@ -160,19 +159,217 @@ function classedTreasure(arrayOfArrays){
     })
     return classedItems
 }
+
 //Route Gameplay to Either Battle or Peace
 function delve(){
+    contentArea.innerHTML = ''
     if (route[pointer].fight) fightStart()
     if (route[pointer].peace) peaceStart()
 }
 
 //Handle Gameplay (Battle)
 function fightStart(){
-    generateFightUi()
+    generateFightDivs()
+    generatePlayerFightCard()
+    generateMonsterFightCard()
+    initTarget()
+    initOptions()
 }
 
-function generateFightUi(){
+function generateFightDivs(){
+    //Make enemy div
+    const enemyDiv = document.createElement("div")
+    enemyDiv.classList.add("enemyspace")
+    contentArea.append(enemyDiv)
+    //Make player div
+    const playerDiv = document.createElement("div")
+    playerDiv.classList.add("playerspace")
+    contentArea.append(playerDiv)
+}
+
+function generatePlayerFightCard(){
+    const playerCard = document.createElement("div")
+    playerCard.classList.add("card")
     
+    const playerSprite = document.createElement("img")
+    playerSprite.src="../img/Hero.png"
+    playerSprite.classList.add("playerSprite")
+    
+    const playerBody = document.createElement("div")
+    playerBody.classList.add("card-body")
+
+    const playerHealthShell = document.createElement ("div")
+    playerHealthShell.classList.add("playerHealthShell")
+
+    const playerHealth = document.createElement ("div")
+    playerHealth.classList.add("playerHealth")
+    playerHealth.innerText = `${hero.hp}/${hero.maxHp}`
+
+    const playerOptions = document.createElement("div")
+    playerOptions.classList.add("list-group")
+    playerOptions.classList.add("playeroptions")
+
+    const playerAttack = document.createElement("h3")
+    playerAttack.classList.add("list-group-item")
+    playerAttack.classList.add("playerAttack")
+    playerAttack.classList.add("playerOption")
+    playerAttack.innerText = "ATK"
+
+    const playerItem = document.createElement("h3")
+    playerItem.classList.add("list-group-item")
+    playerItem.classList.add("playerItem")
+    playerItem.classList.add("playerOption")
+    playerItem.innerText = "ITM"
+
+    playerOptions.append(playerAttack)
+    playerOptions.append(playerItem)
+    playerHealthShell.append(playerHealth)
+    playerBody.append(playerHealthShell)
+    playerBody.append(playerOptions)
+    playerCard.append(playerSprite)
+    playerCard.append(playerBody)
+    document.querySelector(".playerspace").append(playerCard)
+}
+
+function generateMonsterFightCard(){
+    const currentMonsters = routeMonsters[pointer]
+    
+    currentMonsters.forEach(monster=>{
+        const monsterCard = document.createElement("div")
+        monsterCard.classList.add("card")
+        
+        const monsterSprite = document.createElement("img")
+        monsterSprite.src=`../img/${monster.img}`
+        monsterSprite.classList.add("monsterSprite")
+
+        const monsterHealthShell = document.createElement ("div")
+        monsterHealthShell.classList.add("monsterHealthShell")
+
+        const monsterHealth = document.createElement ("div")
+        monsterHealth.classList.add("monsterHealth")
+        monsterHealth.innerText = `${monster.hp}/${monster.maxHp}`
+
+        monsterHealthShell.append(monsterHealth)
+        monsterCard.append(monsterSprite)
+        monsterCard.append(monsterHealthShell)
+        document.querySelector(".enemyspace").append(monsterCard)
+    })
+}
+
+function initTarget(){
+    const monsterSprites = document.querySelectorAll(".monsterSprite")
+    monsterSprites[0].classList.add("target")
+    
+    monsterSprites.forEach(sprite=>{
+        sprite.addEventListener("click", newTarget)
+    })
+}
+
+function newTarget(e){
+    const monsterSprites = document.querySelectorAll(".monsterSprite")
+    monsterSprites.forEach(sprite=>{
+        sprite.classList.remove("target")
+    })
+    e.target.classList.add("target")
+}
+
+function initOptions(){
+    const playerOptions = document.querySelectorAll(".playerOption")
+    
+    playerOptions.forEach(option => {
+        option.addEventListener("click", handleOption)
+    })
+}
+
+function handleOption(e){
+    switch(e.target.innerText){
+        case "ATK": handleAtk()
+        break;
+
+        case "ITM": handleItm()
+        break;
+
+        default: break;
+    }
+}
+
+//Animation work later...
+function handleAtk(){
+    const monsterSprites = document.querySelectorAll(".monsterSprite")
+    let target;
+    monsterSprites.forEach((sprite,i)=>{
+        if (sprite.classList.contains("target")){
+            target = routeMonsters[pointer][i]
+        } 
+    })
+    hero.attackEnemy(target)
+    updateHp()
+    checkVictory()
+    monsterRetaliation()
+}
+
+function updateHp(){
+    const monsterHealths = document.querySelectorAll(".monsterHealth")
+    const playerHealth = document.querySelector(".playerHealth")
+    const monsters = routeMonsters[pointer]
+    
+    monsterHealths.forEach((health, i) => {
+        if (monsters[i].hp > 0){
+            health.innerText = `${monsters[i].hp}/${monsters[i].maxHp}`
+            health.style.setProperty("--hpfill", `${(monsters[i].hp/monsters[i].maxHp)*100}%`)
+        } else {
+            health.innerText = `0/${monsters[i].maxHp}`
+            health.style.setProperty("--hpfill", 0)
+        }
+    })
+
+    if (hero.hp > 0){
+        playerHealth.innerText = `${hero.hp}/${hero.maxHp}`
+        playerHealth.style.setProperty("--hpfill", `${(hero.hp/hero.maxHp)*100}%`)
+    } else {
+        playerHealth.innerText = `0/${hero.maxHp}`
+        playerHealth.style.setProperty("--hpfill", 0)
+    }
+}
+
+function checkVictory(){
+    const monsters = routeMonsters[pointer]
+    let deathCount = 0
+
+    monsters.forEach(monster=>{
+        if (monster.hp <= 0) deathCount++
+    });
+
+    if (deathCount == monsters.length) {
+        console.log("VICTORY")
+        pointer++
+        lootRoom()
+        delve()
+    }
+
+    if (hero.hp <= 0){
+        console.log("DEFEAT")
+    }
+}
+
+//Animation work later...
+function monsterRetaliation(){
+    const monsters = routeMonsters[pointer]
+
+    monsters.forEach(monster => {
+        monster.attack(hero)
+    })
+
+    updateHp()
+    checkVictory()
+}
+
+function handleItm(){
+
+}
+
+function lootRoom(){
+
 }
 
 //Handle Gameplay (Peace) 

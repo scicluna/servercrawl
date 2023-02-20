@@ -11,4 +11,10 @@ export class Monster{
     reset(){
         this.hp = this.maxHp
     }
+
+    attack(target){
+        if (this.atk > target.def){
+            target.hp -= this.atk 
+        } else target.hp--
+    }
 }
