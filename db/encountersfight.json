@@ -16,9 +16,20 @@
         "id": 1,
         "encounter": {
             "name": "dsad",
-            "monsters": ["testMonster"],
+            "monsters": [
+                "testMonster"
+            ],
             "treasureRarity": "common",
             "treasureAmount": "2"
+        }
+    },
+    {
+        "id": 2,
+        "encounter": {
+            "name": "testFight",
+            "monsters": ["slime"],
+            "treasureRarity": "common",
+            "treasureAmount": "1"
         }
     }
 ]

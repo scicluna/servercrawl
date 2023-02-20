@@ -4,8 +4,18 @@
         "monster": {
             "name": "testMonster",
             "hp": 10,
-            "atk": 2,
+            "atk": 1,
             "def": 0,
+            "img": "placeholder.png"
+        }
+    },
+    {
+        "id": 1,
+        "monster": {
+            "name": "slime",
+            "atk": "1",
+            "hp": "12",
+            "def": "0",
             "img": "placeholder.png"
         }
     }

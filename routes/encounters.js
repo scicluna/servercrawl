@@ -17,9 +17,10 @@ encounters.get('/peace', (req,res) => {
 //Posting tools to generate the server
 encounters.post('/fight', (req, res)=>{
     if (!admin) return
-    const {name, monsters, treasureType, treasureAmount} = req.body
+    const {name, monsters, treasureRarity, treasureAmount} = req.body
+    console.log(name, monsters, treasureRarity, treasureAmount)
 
-    if (!name || !monsters || !treasureType || !treasureAmount) return res.json("Insufficient")
+    if (!name || !monsters || !treasureRarity || !treasureAmount) return res.json("Insufficient")
 
     if (!Number.isInteger(parseInt(treasureAmount))) return res.json("Treasure amount must be a number")
 
@@ -29,7 +30,7 @@ encounters.post('/fight', (req, res)=>{
         encounter: {
             name,
             monsters,
-            treasureType,
+            treasureRarity,
             treasureAmount
         }
     }

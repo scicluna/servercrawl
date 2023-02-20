@@ -13,8 +13,8 @@ export class Player{
         this.hp = this.maxHp
         this.level = 1
         this.inventory = [
-            new Item("potion", "consumable", "common", null, null, null, 10),
-            new Item("knife", "weapon", "common", 1)
+            new Item("knife", "weapon", "common", 1),
+            new Item("potion", "healingConsumable", "common", null, null, null, 10),
         ]
         this.totalAtk = this.atk
         this.totalDef = this.def
@@ -56,6 +56,10 @@ export class Player{
 
     lootItem(item){
         this.inventory = [...this.inventory, item]
+    }
+
+    consumeItem(item){
+        this.inventory = this.inventory.filter(thing => thing != item)
     }
 
     attackEnemy(enemy){

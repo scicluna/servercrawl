@@ -17,4 +17,9 @@ export class Monster{
             target.hp -= this.atk 
         } else target.hp--
     }
+
+    isAlive(){
+        if (this.hp > 0) return true
+        else return false
+    }
 }

@@ -15,11 +15,41 @@
     {
         "id": 1,
         "encounter": {
-            "name": "dasdas",
-            "type": "dasdsa",
-            "options": "dasdasd",
-            "shopInventory": "asdasd",
-            "description": "asdasdsa"
+            "name": "peace test",
+            "type": "dialogue",
+            "options": [
+                "potion",
+                "potion"
+            ],
+            "shopInventory": [],
+            "description": "Which would you like? a Potion or a Potion?"
+        }
+    },
+    {
+        "id": 2,
+        "encounter": {
+            "name": "peace test 2",
+            "type": "dialogue",
+            "options": [
+                "potion",
+                "potato"
+            ],
+            "shopInventory": [],
+            "description": "Which would you like? a Potion or a Potato?"
+        }
+    },
+    {
+        "id": 3,
+        "encounter": {
+            "name": "testShop",
+            "type": "shop",
+            "options": "",
+            "shopInventory": [
+                "potion",
+                " potion",
+                " campfire"
+            ],
+            "description": "A little shop sits before you"
         }
     }
 ]

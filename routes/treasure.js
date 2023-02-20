@@ -11,16 +11,22 @@ treasure.get('/', (req, res)=>{
 
 treasure.post('/', (req, res)=>{
     if (!admin) return
-    const {itemName, itemCategory} = req.body
+    const {itemName, itemType, itemRarity, itemAtk, itemDef, itemDmg, itemHeal, itemStatus} = req.body
 
-    if (!itemName || !itemCategory) return res.send("Unidentifiable")
+    if (!itemName || !itemType || !itemRarity) return res.send("Unidentifiable")
 
     const newTreasure = 
     {
         id: treasureJSON.length, //.length instead of .length -1, because we haven't pushed it in yet
         item: {
             itemName,
-            itemCategory,
+            itemType,
+            itemRarity,
+            itemAtk,
+            itemDef,
+            itemDmg,
+            itemHeal,
+            itemStatus
         }
     }
     treasureJSON.push(newTreasure)

@@ -11,18 +11,18 @@ monsters.get('/', (req, res)=>{
 
 monsters.post('/', (req, res)=>{
     if (!admin) return
-    const {name, attacks, hp, armor, img} = req.body
-
-    if (!name || !attacks || !hp || !armor || !img) return res.send("Cannot summon monster")
+    const {name, atk, hp, def, img} = req.body
+    
+    if (!name || !atk || !hp || !def || !img) return res.send("Cannot summon monster")
 
     const newMonster = 
     {
         id: monstersJSON.length, //.length instead of .length -1, because we haven't pushed it in yet
         monster: {
             name,
-            attacks,
+            atk,
             hp,
-            armor,
+            def,
             img
         }
     }

@@ -6,6 +6,7 @@ const contentArea = document.querySelector(".gamecontent")
 const ROUTELENGTH = 10
 let route; // going to create an array of objects that detail the rooms/encounters
 let routeMonsters;
+let routeTreasure;
 let pointer = 0
 
 async function init(){
@@ -115,7 +116,7 @@ async function treasure(){
     const generatedTreasure = await generateTreasure(treasureParams)
     const finalTreasure = classedTreasure(generatedTreasure)
 
-    console.log(finalTreasure)
+    routeTreasure = finalTreasure
 }
 
 function generateTreasureParams(){
@@ -123,6 +124,7 @@ function generateTreasureParams(){
     route.forEach(room=>{
         const rarity = room.fight?.encounter.treasureRarity
         const quantity = room.fight?.encounter.treasureAmount
+        
         if (rarity && quantity) {generatedTreasure.push({rarity, quantity})}
         else generatedTreasure.push(null)
     })
@@ -173,7 +175,7 @@ function fightStart(){
     generatePlayerFightCard()
     generateMonsterFightCard()
     initTarget()
-    initOptions()
+    initFightOptions()
 }
 
 function generateFightDivs(){
@@ -273,7 +275,7 @@ function newTarget(e){
     e.target.classList.add("target")
 }
 
-function initOptions(){
+function initFightOptions(){
     const playerOptions = document.querySelectorAll(".playerOption")
     
     playerOptions.forEach(option => {
@@ -305,7 +307,7 @@ function handleAtk(){
     hero.attackEnemy(target)
     updateHp()
     checkVictory()
-    monsterRetaliation()
+    if (routeMonsters[pointer] != null) monsterRetaliation()
 }
 
 function updateHp(){
@@ -357,7 +359,7 @@ function monsterRetaliation(){
     const monsters = routeMonsters[pointer]
 
     monsters.forEach(monster => {
-        monster.attack(hero)
+        if (monster.isAlive()) monster.attack(hero)
     })
 
     updateHp()
@@ -365,14 +367,125 @@ function monsterRetaliation(){
 }
 
 function handleItm(){
+    if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
 
+    const itemContainer = document.createElement("div")
+    itemContainer.classList.add("itemcontainer")
+
+    const itemList = document.createElement("ul")
+    itemList.classList.add("itemlist")
+
+    hero.openInventory().forEach(item=>{
+        const thing = document.createElement("li")
+        thing.innerText = item.name
+        thing.item = item
+        thing.addEventListener("click", itemOptions)
+        itemList.appendChild(thing)
+    })
+
+    itemContainer.appendChild(itemList)
+    contentArea.append(itemContainer)
+}
+
+//add more options and functions later, all handled near this block
+function itemOptions(e){
+    const item = e.target.item
+
+    switch(item.type){
+        case 'healingConsumable': useHealingConsumable(item)
+        break;
+
+        default: break;
+    }
+}
+
+function useHealingConsumable(item){
+    if (hero.hp + item.heal < hero.maxHp) {
+        hero.hp += item.heal
+    } else hero.hp = hero.maxHp
+    hero.consumeItem(item)
+    updateHp()
+    closeItemMenu()
+    if (routeMonsters[pointer] != null) monsterRetaliation()
+}
+
+function closeItemMenu(){
+    const itemContainer = document.querySelector(".itemcontainer")
+    itemContainer.remove()
 }
 
 function lootRoom(){
-
+    if (routeTreasure[pointer] == null) return
+    routeTreasure[pointer].forEach(treasure=>{
+        hero.lootItem(treasure)
+    })
 }
 
 //Handle Gameplay (Peace) 
 function peaceStart(){
-    console.log("peace")
+    initPeaceType()
+
+}
+
+function initPeaceType(){
+    const type = route[pointer].peace.encounter.type
+    
+    switch(type){
+        case "dialogue": initDialogue()
+        break;
+
+        case "shop": initShop()
+        break;
+
+        default: break;
+    }
+}
+
+function initDialogue(){
+    generateDescription()
+    generateDialogueOptions()
+    initDialogueOptions()
+}
+
+function generateDescription(){
+    const description = route[pointer].peace.encounter.description
+    
+    const peaceBlock = document.createElement("div")
+    peaceBlock.classList.add("peaceblock")
+
+    const peaceDescription = document.createElement("div")
+    peaceDescription.classList.add("peacedescription")
+    peaceDescription.innerText = description
+
+    peaceBlock.append(peaceDescription)
+    contentArea.append(peaceBlock)
+}
+
+function generateDialogueOptions(){
+    const options = route[pointer].peace.encounter.options
+
+    const optionsDiv = document.createElement("div")
+    optionsDiv.classList.add("optionsdiv")
+
+    options.forEach(option=>{
+        const optionDiv = document.createElement("div")
+        optionDiv.classList.add("optiondiv")
+        optionDiv.innerText = option
+        optionsDiv.append(optionDiv)
+    })
+
+    document.querySelector(".peaceblock").append(optionsDiv)
+}
+
+function initDialogueOptions(){
+    const options = document.querySelectorAll(".optiondiv")
+
+    options.forEach(option=>{
+        option.addEventListener("click", handleDialogueOption)
+    })
+}
+
+//Looting items somehow depending on dialogue option, but only if its an item. I don't know how to be honest. Maybe generate them in our treasure gen?
+function handleDialogueOption(e){
+
 }

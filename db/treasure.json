@@ -3,13 +3,26 @@
         "id": 0,
         "item": {
             "itemName": "potion",
-            "itemType": "consumable",
+            "itemType": "healingConsumable",
             "itemRarity": "common",
             "itemAtk": null,
             "itemDef": null,
             "itemDmg": null,
             "itemHeal": 10,
             "itemStatus": null
+        }
+    },
+    {
+        "id": 1,
+        "item": {
+            "itemName": "potato",
+            "itemType": "healingConsumable",
+            "itemRarity": "common",
+            "itemAtk": "",
+            "itemDef": "",
+            "itemDmg": "",
+            "itemHeal": "5",
+            "itemStatus": ""
         }
     }
 ]

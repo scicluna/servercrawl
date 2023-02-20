@@ -110,9 +110,10 @@ function createEntry(e){
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newEntry),
+        body: JSON.stringify(newEntry)
       })
-        .then((response) => response.json())
+        .then(response => response.json()
+        )
         .then((data) => {
             messageHolder.innerText = data
         })
