@@ -12,13 +12,15 @@ export class Player{
     reset(){
         this.hp = this.maxHp
         this.level = 1
+        this.gp = 2
         this.inventory = [
             new Item("knife", "weapon", "common", 1),
             new Item("potion", "healingConsumable", "common", null, null, null, 10),
+            {gp: this.gp}
         ]
         this.totalAtk = this.atk
         this.totalDef = this.def
-        this.gp = 2
+        
         this.optimizeEquipment()
     }
 

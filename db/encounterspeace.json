@@ -1,55 +1,32 @@
 [
     {
-        "id": 0,
-        "encounter": {
-            "name": "post peace",
-            "type": "dialogue",
-            "options": [
-                "woah",
-                "cool"
-            ],
-            "shopInventory": [],
-            "description": "Favorite word?"
-        }
-    },
-    {
         "id": 1,
         "encounter": {
-            "name": "peace test",
-            "type": "dialogue",
-            "options": [
-                "potion",
-                "potion"
-            ],
-            "shopInventory": [],
-            "description": "Which would you like? a Potion or a Potion?"
+            "name": "testEvent",
+            "description": "You come across a suspicious treasurechest.",
+            "type": "event",
+            "options": ["open it", "avoid it and take a small rest"],
+            "outcomes": [{"dmg": 10, "lootQuality": 1, "lootQuantity": 2}, {"heal": 5}]
         }
     },
     {
         "id": 2,
         "encounter": {
             "name": "peace test 2",
+            "description": "Which would you like? a Potion or a Potato?",
             "type": "dialogue",
-            "options": [
-                "potion",
-                "potato"
-            ],
-            "shopInventory": [],
-            "description": "Which would you like? a Potion or a Potato?"
+            "options": ["potion","potato"],
+            "outcomes": ""
         }
     },
     {
         "id": 3,
         "encounter": {
             "name": "testShop",
+            "description": "A little shop sits before you",
             "type": "shop",
-            "options": "",
-            "shopInventory": [
-                "potion",
-                " potion",
-                " campfire"
-            ],
-            "description": "A little shop sits before you"
+            "options": ["potion", "potato", "campfire"],
+            "outcomes": [{},{},{"heal": 15}]
         }
     }
 ]

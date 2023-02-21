@@ -136,10 +136,10 @@ function fightForm(){
 function peaceForm(){
     formContainer.innerHTML = ''
     newFormInput("name")
+    newFormInput("description")
     newFormInput("type")
     newFormInput("options")
-    newFormInput("shopInventory")
-    newFormInput("description")
+    newFormInput("outcomes")
     submitBtn()
 }
 

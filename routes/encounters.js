@@ -44,7 +44,7 @@ encounters.post('/fight', (req, res)=>{
 
 encounters.post('/peace', (req, res)=>{
     if (!admin) return
-    const {name, type, options, shopInventory, description} = req.body
+    const {name, description, type, options, outcomes } = req.body
 
     if (!name || !type || !description) return res.send("Not enough")
 
@@ -53,10 +53,10 @@ encounters.post('/peace', (req, res)=>{
         id: encounterspeaceJSON.length,
         encounter: {
             name,
+            description,
             type,
             options,
-            shopInventory,
-            description
+            outcomes
         }
     }
     encounterspeaceJSON.push(newPeace)

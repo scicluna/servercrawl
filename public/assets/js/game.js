@@ -61,7 +61,7 @@ async function addEncounter(room, type){
 //Handle Inventory/Stats for Player
 const hero = new Player("Hero", 20, 2, 0)
 
-//Handle Monster Generation (array of monster objects based on peace/fight from route and snagged from the database... and converted to monster class?)
+//Handle Monster Generation
 async function monsters(){
     const monsters = generateMonsters()
     const formattedMonsters = await jsonMonsters(monsters)
@@ -169,6 +169,7 @@ function classedTreasure(arrayOfArrays){
 
 //Route Gameplay to Either Battle or Peace
 function delve(){
+    console.log(hero)
     contentArea.innerHTML = ''
     if (route[pointer == undefined]) return console.log("DONE")
     if (route[pointer]?.fight) fightStart()
@@ -374,6 +375,9 @@ function monsterRetaliation(){
 }
 
 function handleItm(){
+    const playerItem = document.querySelector(".playerItem")
+    playerItem.removeEventListener("click", handleOption)
+
     if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
 
     const itemContainer = document.createElement("div")
@@ -384,14 +388,23 @@ function handleItm(){
 
     hero.openInventory().forEach(item=>{
         const thing = document.createElement("li")
-        thing.innerText = item.name
+        thing.innerText = item?.name || `gp ${hero.gp}`
         thing.item = item
+        thing.classList.add("thing")
         thing.addEventListener("click", itemOptions)
         itemList.appendChild(thing)
     })
 
     itemContainer.appendChild(itemList)
     contentArea.append(itemContainer)
+    playerItem.addEventListener("click", closeInventory)
+}
+
+function closeInventory(){
+    const playerItem = document.querySelector(".playerItem")
+    if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
+    playerItem.removeEventListener("click", closeInventory)
+    playerItem.addEventListener("click", handleOption)
 }
 
 //add more options and functions later, all handled near this block
@@ -407,8 +420,8 @@ function itemOptions(e){
 }
 
 function useHealingConsumable(item){
-    if (hero.hp + item.heal < hero.maxHp) {
-        hero.hp += item.heal
+    if (hero.hp + parseInt(item.heal) < hero.maxHp) {
+        hero.hp += parseInt(item.heal)
     } else hero.hp = hero.maxHp
     hero.consumeItem(item)
     updateHp()
@@ -434,7 +447,6 @@ function lootRoom(){
 //Handle Gameplay (Peace) 
 function peaceStart(){
     initPeaceType()
-
 }
 
 function initPeaceType(){
@@ -456,7 +468,7 @@ function initPeaceType(){
 
 function initDialogue(){
     generateDescription()
-    generateOptions("options")
+    generateOptions()
     initOptions(handleDialogueOption)
 }
 
@@ -474,8 +486,8 @@ function generateDescription(){
     contentArea.append(peaceBlock)
 }
 
-function generateOptions(type){
-    const options = route[pointer].peace.encounter[type]
+function generateOptions(){
+    const options = route[pointer].peace.encounter.options
 
     const optionsDiv = document.createElement("div")
     optionsDiv.classList.add("optionsdiv")
@@ -517,7 +529,7 @@ async function handleDialogueOption(e){
 
 function initShop(){
     generateDescription()
-    generateOptions("shopInventory")
+    generateOptions()
     initOptions(handleShop)
 }
 
@@ -538,9 +550,18 @@ async function handleShop(e){
     delve()
 }
 
+//What to do... Basically events tied to basic functions that hurt, heal, or give loot or a combination. How do we make these events and tie em to encounters?
+function initEvent(){
+    const event = route[pointer].peace.encounter
+    console.log(event)
+
+
+    
+
+
+}
+
 //TODO: 
-//STYLE PEACETIME EVENTS
-//STYLE ITEM MENU
 //ADD EVENT PEACETIME EVENTS
 //ADD BATTLE ANIMATIONS
 //IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
