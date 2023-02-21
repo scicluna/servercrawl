@@ -116,6 +116,7 @@ async function treasure(){
     const generatedTreasure = await generateTreasure(treasureParams)
     const finalTreasure = classedTreasure(generatedTreasure)
 
+    console.log(finalTreasure)
     routeTreasure = finalTreasure
 }
 
@@ -124,7 +125,7 @@ function generateTreasureParams(){
     route.forEach(room=>{
         const rarity = room.fight?.encounter.treasureRarity
         const quantity = room.fight?.encounter.treasureAmount
-        
+
         if (rarity && quantity) {generatedTreasure.push({rarity, quantity})}
         else generatedTreasure.push(null)
     })
@@ -138,13 +139,17 @@ async function generateTreasure(params){
     const jsonItems = params.map(param=>{
         if (param == null) return null
         const {rarity, quantity} = param
+        
+        const potentialDrops = []
+        treasureJson.forEach(json => {
+            if (rarity == json.item.itemRarity){
+                potentialDrops.push(json.item)
+            }
+        })
         const drops = []
         for (let i=0; i<quantity; i++){
-            treasureJson.forEach(json => {
-                if (rarity == json.item.itemRarity){
-                    drops.push(json.item)
-                }
-            })
+            const randomNumber = rando(0, potentialDrops.length-1)
+            drops.push(potentialDrops[randomNumber])
         }
         return drops
     })
@@ -165,12 +170,14 @@ function classedTreasure(arrayOfArrays){
 //Route Gameplay to Either Battle or Peace
 function delve(){
     contentArea.innerHTML = ''
-    if (route[pointer].fight) fightStart()
-    if (route[pointer].peace) peaceStart()
+    if (route[pointer == undefined]) return console.log("DONE")
+    if (route[pointer]?.fight) fightStart()
+    if (route[pointer]?.peace) peaceStart()
 }
 
 //Handle Gameplay (Battle)
 function fightStart(){
+    console.log(routeMonsters[pointer])
     generateFightDivs()
     generatePlayerFightCard()
     generateMonsterFightCard()
@@ -419,6 +426,9 @@ function lootRoom(){
     routeTreasure[pointer].forEach(treasure=>{
         hero.lootItem(treasure)
     })
+    routeMonsters.forEach(monster=>{
+        hero.gp++
+    })
 }
 
 //Handle Gameplay (Peace) 
@@ -437,14 +447,17 @@ function initPeaceType(){
         case "shop": initShop()
         break;
 
+        case "event": initEvent()
+        break;
+
         default: break;
     }
 }
 
 function initDialogue(){
     generateDescription()
-    generateDialogueOptions()
-    initDialogueOptions()
+    generateOptions("options")
+    initOptions(handleDialogueOption)
 }
 
 function generateDescription(){
@@ -461,8 +474,8 @@ function generateDescription(){
     contentArea.append(peaceBlock)
 }
 
-function generateDialogueOptions(){
-    const options = route[pointer].peace.encounter.options
+function generateOptions(type){
+    const options = route[pointer].peace.encounter[type]
 
     const optionsDiv = document.createElement("div")
     optionsDiv.classList.add("optionsdiv")
@@ -477,15 +490,64 @@ function generateDialogueOptions(){
     document.querySelector(".peaceblock").append(optionsDiv)
 }
 
-function initDialogueOptions(){
+function initOptions(eventFunction){
     const options = document.querySelectorAll(".optiondiv")
 
     options.forEach(option=>{
-        option.addEventListener("click", handleDialogueOption)
+        option.addEventListener("click", eventFunction)
     })
 }
 
 //Looting items somehow depending on dialogue option, but only if its an item. I don't know how to be honest. Maybe generate them in our treasure gen?
-function handleDialogueOption(e){
-
+async function handleDialogueOption(e){
+    const response = await fetch("/api/treasure")
+    const treasureJson = await response.json()
+    
+    treasureJson.forEach(json=>{
+        const jsI = json.item
+        if(e.target.innerText.includes(jsI?.itemName)){
+        hero.lootItem(new Item(jsI?.itemName, jsI?.itemType, jsI?.itemRarity, jsI?.itemAtk, jsI?.itemDef, jsI?.itemDmg, jsI?.itemHeal, jsI?.itemStatus))
+        //add "you obtained a *" message here if they obtained an item for now, just console logging it
+        console.log(`You have obtained a ${jsI.itemName}`)
+        }
+    })
+    pointer++
+    delve()
 }
+
+function initShop(){
+    generateDescription()
+    generateOptions("shopInventory")
+    initOptions(handleShop)
+}
+
+async function handleShop(e){
+    const response = await fetch("/api/treasure")
+    const treasureJson = await response.json()
+
+    treasureJson.forEach(json=>{
+        const jsI = json.item
+        if(e.target.innerText.includes(jsI?.itemName) && hero.gp >= jsI.value){
+        hero.lootItem(new Item(jsI?.itemName, jsI?.itemType, jsI?.itemRarity, jsI?.itemAtk, jsI?.itemDef, jsI?.itemDmg, jsI?.itemHeal, jsI?.itemStatus, jsI?.value))
+        //add "you obtained a *" message here if they obtained an item for now, just console logging it
+        hero.gp -= jsI.value
+        console.log(`You have obtained a ${jsI.itemName}`)
+        }
+    })
+    pointer++
+    delve()
+}
+
+//TODO: 
+//STYLE PEACETIME EVENTS
+//STYLE ITEM MENU
+//ADD EVENT PEACETIME EVENTS
+//ADD BATTLE ANIMATIONS
+//IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
+//ADD MORE MONSTER VARIETY
+//GIVE MONSTERS "SPECIAL" ATTACKS
+//ITEM ACQUIRED MESSAGE
+//PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF)
+//MORE OF EVERYTHING
+//TWEEK NUMBERS
+//FILE RESTRUCTURE (MORE JS FILES)

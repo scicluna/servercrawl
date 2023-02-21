@@ -171,5 +171,6 @@ function treasureForm(){
     newFormInput("itemDmg")
     newFormInput("itemHeal")
     newFormInput("itemStatus")
+    newFormInput("value")
     submitBtn()
 }

@@ -18,6 +18,7 @@ export class Player{
         ]
         this.totalAtk = this.atk
         this.totalDef = this.def
+        this.gp = 2
         this.optimizeEquipment()
     }
 

@@ -11,7 +11,7 @@ treasure.get('/', (req, res)=>{
 
 treasure.post('/', (req, res)=>{
     if (!admin) return
-    const {itemName, itemType, itemRarity, itemAtk, itemDef, itemDmg, itemHeal, itemStatus} = req.body
+    const {itemName, itemType, itemRarity, itemAtk, itemDef, itemDmg, itemHeal, itemStatus, value} = req.body
 
     if (!itemName || !itemType || !itemRarity) return res.send("Unidentifiable")
 
@@ -26,7 +26,8 @@ treasure.post('/', (req, res)=>{
             itemDef,
             itemDmg,
             itemHeal,
-            itemStatus
+            itemStatus,
+            value
         }
     }
     treasureJSON.push(newTreasure)

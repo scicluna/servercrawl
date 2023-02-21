@@ -9,7 +9,8 @@
             "itemDef": null,
             "itemDmg": null,
             "itemHeal": 10,
-            "itemStatus": null
+            "itemStatus": null,
+            "value": 2
         }
     },
     {
@@ -22,7 +23,8 @@
             "itemDef": "",
             "itemDmg": "",
             "itemHeal": "5",
-            "itemStatus": ""
+            "itemStatus": "",
+            "value": 1
         }
     }
 ]
