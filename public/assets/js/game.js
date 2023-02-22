@@ -152,7 +152,7 @@ async function generateTreasure(params){
             drops.push(potentialDrops[randomNumber])
         }
         return drops
-    })
+    }) 
     return jsonItems
 }
 
@@ -171,16 +171,16 @@ function classedTreasure(arrayOfArrays){
 function delve(){
     console.log(hero)
     contentArea.innerHTML = ''
-    if (route[pointer == undefined]) return console.log("DONE")
+    if (route[pointer] == undefined) endScreen()
     if (route[pointer]?.fight) fightStart()
     if (route[pointer]?.peace) peaceStart()
 }
 
 //Handle Gameplay (Battle)
 function fightStart(){
-    console.log(routeMonsters[pointer])
     generateFightDivs()
     generatePlayerFightCard()
+    updateHp()
     generateMonsterFightCard()
     initTarget()
     initFightOptions()
@@ -545,6 +545,9 @@ async function handleShop(e){
         hero.gp -= jsI.value
         console.log(`You have obtained a ${jsI.itemName}`)
         }
+        if (e.target.innerText.includes(jsI?.itemName) && hero.hp < jsI.value){
+            console.log("NOT ENOUGH MONEY")
+        }
     })
     pointer++
     delve()
@@ -552,23 +555,50 @@ async function handleShop(e){
 
 //What to do... Basically events tied to basic functions that hurt, heal, or give loot or a combination. How do we make these events and tie em to encounters?
 function initEvent(){
-    const event = route[pointer].peace.encounter
-    console.log(event)
-
-
-    
-
-
+    generateDescription()
+    generateOptions()
+    initOptions(handleEvent)
 }
 
+function handleEvent(e){
+    const event = route[pointer].peace.encounter
+    const {options} = event // ["option 1", "option 2", ...]
+    const {outcomes} = event // ["{dmg: 5}", "{heal: 5}""] // want to either deal damage or heal based on the object. // Must manually correct the JSON file for now
+    
+    options.forEach(async (option, i)=>{
+        if(e.target.innerText == option){
+            const {dmg=null, heal=null, lootQuality=null, lootQuantity=null} = outcomes[i] //All event attributes listed here  
+            //All event attributes dealt with here
+            if (dmg) hero.hp -= parseInt(dmg)
+            if (heal) hero.hp += parseInt(heal)
+            if (lootQuality && lootQuantity) {
+                const generatedTreasure = await generateTreasure([{rarity: lootQuality, quantity: lootQuantity}])
+                const finalTreasure = classedTreasure(generatedTreasure)
+                hero.lootItem(finalTreasure)
+            }
+            hero.checkHp()
+        }
+    })
+    pointer++
+    delve()
+}
+
+function endScreen(){
+    console.log("YOU WIN")
+}
+
+
 //TODO: 
-//ADD EVENT PEACETIME EVENTS
+//ADD END(WIN) CARD
+//ADD DEFEAT CARD
 //ADD BATTLE ANIMATIONS
 //IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
+//MAJOR REFACTOR
 //ADD MORE MONSTER VARIETY
 //GIVE MONSTERS "SPECIAL" ATTACKS
 //ITEM ACQUIRED MESSAGE
-//PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF)
+//PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF) // "NEXT" CARD
 //MORE OF EVERYTHING
 //TWEEK NUMBERS
 //FILE RESTRUCTURE (MORE JS FILES)
+//BOSS FIGHT 

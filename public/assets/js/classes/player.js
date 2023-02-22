@@ -29,7 +29,7 @@ export class Player{
     }
 
     checkHp(){
-        if (this.hp <= 0) return false
+        if (this.hp <= 0) return console.log("YOU HAVE DIED")
         return `${this.hp}/${this.maxHp}`
     }
 
@@ -58,7 +58,7 @@ export class Player{
     }
 
     lootItem(item){
-        this.inventory = [...this.inventory, item]
+        this.inventory = [...this.inventory, item].flat(Infinity)
     }
 
     consumeItem(item){

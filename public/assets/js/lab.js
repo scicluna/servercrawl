@@ -139,7 +139,7 @@ function peaceForm(){
     newFormInput("description")
     newFormInput("type")
     newFormInput("options")
-    newFormInput("outcomes")
+    newFormInput("outcomes") // Defunct - doesn't work and requires manual fixing. 
     submitBtn()
 }
 

@@ -5,8 +5,20 @@
             "name": "testEvent",
             "description": "You come across a suspicious treasurechest.",
             "type": "event",
-            "options": ["open it", "avoid it and take a small rest"],
-            "outcomes": [{"dmg": 10, "lootQuality": 1, "lootQuantity": 2}, {"heal": 5}]
+            "options": [
+                "open it",
+                "avoid it and take a small rest"
+            ],
+            "outcomes": [
+                {
+                    "dmg": 10,
+                    "lootQuality": "common",
+                    "lootQuantity": 2
+                },
+                {
+                    "heal": 5
+                }
+            ]
         }
     },
     {
@@ -15,7 +27,10 @@
             "name": "peace test 2",
             "description": "Which would you like? a Potion or a Potato?",
             "type": "dialogue",
-            "options": ["potion","potato"],
+            "options": [
+                "potion",
+                "potato"
+            ],
             "outcomes": ""
         }
     },
@@ -25,8 +40,34 @@
             "name": "testShop",
             "description": "A little shop sits before you",
             "type": "shop",
-            "options": ["potion", "potato", "campfire"],
-            "outcomes": [{},{},{"heal": 15}]
+            "options": [
+                "potion",
+                "potato",
+                "campfire"
+            ],
+            "outcomes": [
+                {},
+                {},
+                {
+                    "heal": 15
+                }
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "encounter": {
+            "name": "testEvent2",
+            "description": "This is a strange event",
+            "type": "event",
+            "options": [
+                "Jump",
+                " Run Around"
+            ],
+            "outcomes": [
+                {"dmg": 2},
+                {"dmg": 1}
+            ]
         }
     }
 ]
