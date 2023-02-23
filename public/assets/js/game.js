@@ -13,6 +13,9 @@ let routeMonsters; // going to create an array of objects that detail the monste
 let routeTreasure; // going to create an array of objects that detail the random treasure drops
 let pointer = 0 //keeps track of the current room
 
+//Handle Inventory/Stats for Player
+const hero = new Player("Hero", 20, 2, 0)
+
 //handles game initialization
 async function init(){
     await rooms()
@@ -30,11 +33,12 @@ async function rooms(){
     route = finalRooms
     console.log(route)
 }
-
+//pushes our json rooms into an array
 async function generateRooms(num){
-    const generatedRooms = []
     const response = await fetch('/api/rooms')
     const roomJson = await response.json()
+
+    const generatedRooms = []
     for (let i=0; i<num; i++){
         const randomNumber = rando(0, roomJson.length-1)
         const newRoom = roomJson[randomNumber]
@@ -42,7 +46,7 @@ async function generateRooms(num){
     }
     return generatedRooms
 }
-
+//calculates random encounters within our rooms
 function randomEncounter(rooms){
     const roomsWithEncounters = rooms.map(room=>{
         const randomEncounter = rando(0, 100)
@@ -54,7 +58,7 @@ function randomEncounter(rooms){
     })
     return roomsWithEncounters
 }
-
+//Allows me to add an encounter based on its type
 async function addEncounter(room, type){
     const response = await fetch(`/api/encounters/${type}`)
     const json = await response.json()
@@ -62,9 +66,6 @@ async function addEncounter(room, type){
 
     return {...room, [type]: json[randomIndex]} //async functions return promises
 }
-
-//Handle Inventory/Stats for Player
-const hero = new Player("Hero", 20, 2, 0)
 
 //Handle Monster Generation
 async function monsters(){
@@ -74,7 +75,7 @@ async function monsters(){
     routeMonsters = finalMonsters
     console.log(routeMonsters)
 }
-
+//Creates an array of monster names
 function generateMonsters(){
     const generatedMonsters = []
     route.forEach(room=>{
@@ -83,8 +84,8 @@ function generateMonsters(){
     })
     return generatedMonsters
 }
-
-async function jsonMonsters(monsters){ //transform arrays of strings into arrays of monster objects
+//Calls from the monsters api route and replaces the array of arrays of monster names into arrays of arrays of objects
+async function jsonMonsters(monsters){
     const response = await fetch('/api/monsters')
     const monstersJson = await response.json()
 
@@ -93,9 +94,7 @@ async function jsonMonsters(monsters){ //transform arrays of strings into arrays
         const groupedObjects = monstergroup.map(monster=>{
             let object;
             monstersJson.forEach(json => {
-                if (json.monster.name === monster){
-                    object = json.monster
-                }
+                if (json.monster.name === monster) object = json.monster
             })
             return object
         })
@@ -103,7 +102,7 @@ async function jsonMonsters(monsters){ //transform arrays of strings into arrays
     })
     return mappedMonsters
 }
-
+//Takes the individual monster objects and transforms them using our Monster class into an array of arrays of monster objects
 function classedMonsters(monsterarray){
     const classyMonsters = monsterarray.map(monstergroup=>{
         if (monstergroup == null) return null
@@ -115,7 +114,7 @@ function classedMonsters(monsterarray){
     return classyMonsters
 }
 
-//Handle Treasure Generation (array of treasure objects snagged from the database... and converted to item class?)
+//handles treasure generation
 async function treasure(){
     const treasureParams = generateTreasureParams()
     const generatedTreasure = await generateTreasure(treasureParams)
@@ -125,6 +124,7 @@ async function treasure(){
     routeTreasure = finalTreasure
 }
 
+//takes the treasure paramaters from the room objects and creates an array of arrays of parameters
 function generateTreasureParams(){
     const generatedTreasure = []
     route.forEach(room=>{
@@ -137,6 +137,7 @@ function generateTreasureParams(){
     return generatedTreasure
 }
 
+//fetches from the treasure api and uses the parameters to randomly select items based on those parameters
 async function generateTreasure(params){
     const response = await fetch('/api/treasure')
     const treasureJson = await response.json()
@@ -161,6 +162,7 @@ async function generateTreasure(params){
     return jsonItems
 }
 
+//uses the item JSONS to build out Item class objects
 function classedTreasure(arrayOfArrays){
     const classedItems = arrayOfArrays.map(jsonarray=>{
         if(jsonarray == null) return null
@@ -191,17 +193,18 @@ function fightStart(){
     initFightOptions()
 }
 
+//generate fight-sequence divs
 function generateFightDivs(){
-    //Make enemy div
     const enemyDiv = document.createElement("div")
     enemyDiv.classList.add("enemyspace")
     contentArea.append(enemyDiv)
-    //Make player div
+
     const playerDiv = document.createElement("div")
     playerDiv.classList.add("playerspace")
     contentArea.append(playerDiv)
 }
 
+//handles the player's side of the fight
 function generatePlayerFightCard(){
     const playerCard = document.createElement("div")
     playerCard.classList.add("card")
@@ -246,6 +249,7 @@ function generatePlayerFightCard(){
     document.querySelector(".playerspace").append(playerCard)
 }
 
+//handles the monster side of the fight
 function generateMonsterFightCard(){
     const currentMonsters = routeMonsters[pointer]
     
@@ -271,15 +275,15 @@ function generateMonsterFightCard(){
     })
 }
 
+//handles the targetting mechanic
 function initTarget(){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
-    monsterSprites[0].classList.add("target")
+    monsterSprites[0].classList.add("target") // eventually change this so i can call it and have it select the first non-dead target
     
     monsterSprites.forEach(sprite=>{
         sprite.addEventListener("click", newTarget)
     })
 }
-
 function newTarget(e){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
     monsterSprites.forEach(sprite=>{
@@ -288,6 +292,7 @@ function newTarget(e){
     e.target.classList.add("target")
 }
 
+//turns on the buttons for the player options
 function initFightOptions(){
     const playerOptions = document.querySelectorAll(".playerOption")
     
@@ -296,19 +301,18 @@ function initFightOptions(){
     })
 }
 
+//handles the fight option click
 function handleOption(e){
     switch(e.target.innerText){
         case "ATK": handleAtk()
         break;
-
         case "ITM": handleItm()
         break;
-
         default: break;
     }
 }
 
-//Animation work later...
+//Animation work later... for now just handles basic attacks
 function handleAtk(){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
     let target;
@@ -323,6 +327,7 @@ function handleAtk(){
     if (routeMonsters[pointer] != null) monsterRetaliation()
 }
 
+//updates the hp bars for both the player and the monsters
 function updateHp(){
     const monsterHealths = document.querySelectorAll(".monsterHealth")
     const playerHealth = document.querySelector(".playerHealth")
@@ -337,7 +342,6 @@ function updateHp(){
             health.style.setProperty("--hpfill", 0)
         }
     })
-
     if (hero.hp > 0){
         playerHealth.innerText = `${hero.hp}/${hero.maxHp}`
         playerHealth.style.setProperty("--hpfill", `${(hero.hp/hero.maxHp)*100}%`)
@@ -347,38 +351,37 @@ function updateHp(){
     }
 }
 
+//checks for the current status of all of the monsters -- should probably use a method for the monster
 function checkVictory(){
     const monsters = routeMonsters[pointer]
     let deathCount = 0
 
     monsters.forEach(monster=>{
         if (monster.hp <= 0) deathCount++
-    });
-
+    })
     if (deathCount == monsters.length) {
         console.log("VICTORY")
         pointer++
         lootRoom()
         delve()
     }
-
     if (hero.hp <= 0){
         console.log("DEFEAT")
     }
 }
 
-//Animation work later...
+//Animation work later... but for now it handles basic monster retaliation
 function monsterRetaliation(){
     const monsters = routeMonsters[pointer]
 
     monsters.forEach(monster => {
         if (monster.isAlive()) monster.attack(hero)
     })
-
     updateHp()
     checkVictory()
 }
 
+//generates the item menu and gives them functionality
 function handleItm(){
     const playerItem = document.querySelector(".playerItem")
     playerItem.removeEventListener("click", handleOption)
@@ -399,19 +402,17 @@ function handleItm(){
         thing.addEventListener("click", itemOptions)
         itemList.appendChild(thing)
     })
-
     itemContainer.appendChild(itemList)
     contentArea.append(itemContainer)
     playerItem.addEventListener("click", closeInventory)
 }
-
+//handles the closing of the item inventory
 function closeInventory(){
     const playerItem = document.querySelector(".playerItem")
     if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
     playerItem.removeEventListener("click", closeInventory)
     playerItem.addEventListener("click", handleOption)
 }
-
 //add more options and functions later, all handled near this block
 function itemOptions(e){
     const item = e.target.item
@@ -423,22 +424,18 @@ function itemOptions(e){
         default: break;
     }
 }
-
+//handles the use of specifically healing items
 function useHealingConsumable(item){
     if (hero.hp + parseInt(item.heal) < hero.maxHp) {
         hero.hp += parseInt(item.heal)
     } else hero.hp = hero.maxHp
     hero.consumeItem(item)
     updateHp()
-    closeItemMenu()
+    closeInventory()
     if (routeMonsters[pointer] != null) monsterRetaliation()
 }
 
-function closeItemMenu(){
-    const itemContainer = document.querySelector(".itemcontainer")
-    itemContainer.remove()
-}
-
+//handles looting a room after a fight encounter -- just adding 1 gp per monster killed right now, but will probably be a more reasonable value eventually
 function lootRoom(){
     if (routeTreasure[pointer] == null) return
     routeTreasure[pointer].forEach(treasure=>{
@@ -454,29 +451,27 @@ function peaceStart(){
     initPeaceType()
 }
 
+//runs a peace function depending on its type
 function initPeaceType(){
     const type = route[pointer].peace.encounter.type
-    
     switch(type){
         case "dialogue": initDialogue()
         break;
-
         case "shop": initShop()
         break;
-
         case "event": initEvent()
         break;
-
         default: break;
     }
 }
 
+//initializes dialogue encounters
 function initDialogue(){
     generateDescription()
     generateOptions()
     initOptions(handleDialogueOption)
 }
-
+//handles peace descriptions
 function generateDescription(){
     const description = route[pointer].peace.encounter.description
     
@@ -490,7 +485,7 @@ function generateDescription(){
     peaceBlock.append(peaceDescription)
     contentArea.append(peaceBlock)
 }
-
+//handles peace options
 function generateOptions(){
     const options = route[pointer].peace.encounter.options
 
@@ -503,10 +498,9 @@ function generateOptions(){
         optionDiv.innerText = option
         optionsDiv.append(optionDiv)
     })
-
     document.querySelector(".peaceblock").append(optionsDiv)
 }
-
+//initializes the peace options and passes in the appropriate onclick function
 function initOptions(eventFunction){
     const options = document.querySelectorAll(".optiondiv")
 
@@ -538,6 +532,7 @@ function initShop(){
     initOptions(handleShop)
 }
 
+//handles shop option functionality
 async function handleShop(e){
     const response = await fetch("/api/treasure")
     const treasureJson = await response.json()
@@ -565,6 +560,7 @@ function initEvent(){
     initOptions(handleEvent)
 }
 
+//handles event button functionality - JSON generator for this is still broken
 function handleEvent(e){
     const event = route[pointer].peace.encounter
     const {options} = event // ["option 1", "option 2", ...]
