@@ -1,21 +1,26 @@
+//CLASS IMPORTS
 import { Player } from "./classes/player.js"
 import { Monster } from "./classes/monster.js"
 import { Item } from "./classes/item.js"
 
+//DOM SELECTION
 const contentArea = document.querySelector(".gamecontent")
-const ROUTELENGTH = 10
-let route; // going to create an array of objects that detail the rooms/encounters
-let routeMonsters;
-let routeTreasure;
-let pointer = 0
 
+//KEY GLOBAL VARIABLES
+const ROUTELENGTH = 10 // controls length of the game
+let route; // going to create an array of objects that detail the rooms/encounters
+let routeMonsters; // going to create an array of objects that detail the monsters encountered
+let routeTreasure; // going to create an array of objects that detail the random treasure drops
+let pointer = 0 //keeps track of the current room
+
+//handles game initialization
 async function init(){
     await rooms()
     await monsters()
     await treasure()
     delve()
 }
-init()
+init() //calls for the game to begin
 
 //Generate Rooms
 async function rooms(){

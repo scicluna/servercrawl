@@ -10,7 +10,6 @@ export class Item{
         this.status = status
     }
 
-    checkType(){
-        return this.type
-    }
+    //shows item type
+    checkType(){return this.type}
 }

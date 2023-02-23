@@ -1,3 +1,4 @@
+//IMPORTS
 const admin = require("../server")
 const express = require("express")
 const encounters = express.Router()
@@ -16,12 +17,13 @@ encounters.get('/peace', (req,res) => {
 
 //Posting tools to generate the server
 encounters.post('/fight', (req, res)=>{
+    //check for admin flag
     if (!admin) return
+    //destructure to get our variables
     const {name, monsters, treasureRarity, treasureAmount} = req.body
-    console.log(name, monsters, treasureRarity, treasureAmount)
-
+    //make sure we have enough information
     if (!name || !monsters || !treasureRarity || !treasureAmount) return res.json("Insufficient")
-
+    //make sure treasureAmount is a number
     if (!Number.isInteger(parseInt(treasureAmount))) return res.json("Treasure amount must be a number")
 
     const newFight = 
@@ -36,12 +38,14 @@ encounters.post('/fight', (req, res)=>{
     }
     encountersfightJSON.push(newFight)
 
+    //write to DB
     fs.writeFile("./db/encountersfight.json", JSON.stringify(encountersfightJSON, null, 4), (err)=>{
         if (err) throw err
        })
     res.json("A new encounter has been added")
 })
 
+//similar structure to /fight
 encounters.post('/peace', (req, res)=>{
     if (!admin) return
     const {name, description, type, options, outcomes } = req.body
@@ -67,6 +71,7 @@ encounters.post('/peace', (req, res)=>{
     res.json("A new encounter has been added")
 })
 
+//unimplemented delete routes
 encounters.delete('/fight/:id', (req, res) =>{
     if (!admin) return
 

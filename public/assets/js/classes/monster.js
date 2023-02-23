@@ -8,16 +8,19 @@ export class Monster{
         this.reset()
     }
 
+    //set to create non-constructor attributes
     reset(){
         this.hp = this.maxHp
     }
 
+    //handles basic monster attacks
     attack(target){
         if (this.atk > target.def){
             target.hp -= this.atk 
         } else target.hp--
     }
 
+    //checks if monster is dead or alive
     isAlive(){
         if (this.hp > 0) return true
         else return false

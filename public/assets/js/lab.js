@@ -1,35 +1,32 @@
+//DOMS
 const options = document.querySelectorAll(".optionbtn")
 const formContainer = document.querySelector(".formcontainer")
 const messageHolder = document.querySelector(".message")
+
+//init our options menu
 let pickedOption;
+options.forEach(option=>{option.addEventListener("click", buildForm)})
 
-options.forEach(option=>{
-    option.addEventListener("click", buildForm)
-})
-
+//switch statement for our different forms
 function buildForm(e){
     messageHolder.innerText=""
     pickedOption = e.target.innerText
     switch(pickedOption){
         case 'Fight Encounter': fightForm()
         break;
-
         case 'Peace Encounter': peaceForm()
-        break;l
-    
+        break;
         case 'Monster': monsterForm()
         break;
-
         case 'Room': roomForm()
         break;
-
         case 'Treasure': treasureForm()
         break;
-
         default: console.log("FORM ERROR")
     }
 }
 
+//creates form inputs
 function newFormInput(fieldName){
     const newDiv = document.createElement("div")
     const newInput = document.createElement("input")
@@ -47,6 +44,7 @@ function newFormInput(fieldName){
     formContainer.appendChild(newDiv)
 }
 
+//creates submit btn
 function submitBtn(){
     const newDiv = document.createElement("div")
     const newBtn = document.createElement("button")
@@ -63,67 +61,47 @@ function submitBtn(){
     formContainer.appendChild(newDiv)
 }
 
+//handles our submission
 function createEntry(e){
     e.preventDefault()
+    //grab DOMS
     const inputs = document.querySelectorAll(".input")
     const inputlabels = document.querySelectorAll(".inputlabel")
-
-    const labels = []
-    inputlabels.forEach(label=>{
-        labels.push(label.innerText)
-    })
-
-    const inputvalues = []
-    inputs.forEach(input=>{
-        let processedValue = input.value
-        if(input.value.includes(",")) processedValue = input.value.split(",")
-        inputvalues.push(processedValue)
-    })
-
+    
+    //create new object for DB
     const newEntry = {}
-    labels.forEach((label, i)=>{
-        newEntry[label] = inputvalues[i]
-    })
+    inputlabels.forEach((label, i)=>{newEntry[label.innerText] = inputs[i].value})
 
+    //build out our fetch path
     let path;
     switch(pickedOption){
         case 'Fight Encounter': path = 'encounters/fight'
         break;
-
         case 'Peace Encounter': path = 'encounters/peace'
         break;
-    
         case 'Monster': path = 'monsters'
         break;
-
         case 'Room': path = 'rooms'
         break;
-
         case 'Treasure': path = 'treasure'
         break;
-
         default: console.log("PATH ERROR")
     }
 
+    //handle our post request to the DB
     fetch(`/api/${path}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(newEntry)
-      })
-        .then(response => response.json()
-        )
-        .then((data) => {
-            messageHolder.innerText = data
-        })
-
-
+    })
+    .then(response => response.json())
+    .then((data) => {messageHolder.innerText = data})
     inputs.forEach(input=>{
         input.value=''
     })
 }
 
+//construct all of our forms using the above helper functions
 function fightForm(){
     formContainer.innerHTML = ''
     newFormInput("name")

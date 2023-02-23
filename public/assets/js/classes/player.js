@@ -9,6 +9,7 @@ export class Player{
         this.reset()
     }
 
+    //non constructor derived properties
     reset(){
         this.hp = this.maxHp
         this.level = 1
@@ -20,19 +21,19 @@ export class Player{
         ]
         this.totalAtk = this.atk
         this.totalDef = this.def
-        
         this.optimizeEquipment()
     }
 
-    openInventory(){
-        return this.inventory
-    }
+    //displays current inventory
+    openInventory(){return this.inventory}
 
+    //checks hp total (will eventually return false and be used as an "isAlive" type function)
     checkHp(){
         if (this.hp <= 0) return console.log("YOU HAVE DIED")
         return `${this.hp}/${this.maxHp}`
     }
 
+    //finds the best weapon in the player's inventory
     checkBestWeapon(){
         let bestWeapon;
         this.inventory.forEach(item=>{
@@ -41,6 +42,7 @@ export class Player{
         return bestWeapon
     }
 
+    //finds the best armor in the player's inventory
     checkBestArmor(){
         let bestArmor;
         this.inventory.forEach(item=>{
@@ -49,22 +51,21 @@ export class Player{
         return bestArmor
     }
 
+    //optimizes players equipment and sets totalAtk and totalDef
     optimizeEquipment(){
         const bestWeapon = this.checkBestWeapon()
         const bestArmor = this.checkBestArmor()
-
         this.totalAtk = this.atk + bestWeapon?.atk || this.atk
         this.totalDef = this.def + bestArmor?.def || this.def
     }
 
-    lootItem(item){
-        this.inventory = [...this.inventory, item].flat(Infinity)
-    }
+    //handles looting items
+    lootItem(item){this.inventory = [...this.inventory, item].flat(Infinity)}
 
-    consumeItem(item){
-        this.inventory = this.inventory.filter(thing => thing != item)
-    }
+    //removes item from inventory
+    consumeItem(item){this.inventory = this.inventory.filter(thing => thing != item)}
 
+    //handles basic attacks
     attackEnemy(enemy){
         if (this.totalAtk < enemy.def){
             enemy.hp -= 1
@@ -72,6 +73,4 @@ export class Player{
             enemy.hp -= this.totalAtk + enemy.def 
         }
     }
-
-
 }
