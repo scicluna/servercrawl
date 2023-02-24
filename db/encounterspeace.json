@@ -1,6 +1,6 @@
 [
     {
-        "id": 1,
+        "id": 0,
         "encounter": {
             "name": "testEvent",
             "description": "You come across a suspicious treasurechest.",
@@ -22,7 +22,7 @@
         }
     },
     {
-        "id": 2,
+        "id": 1,
         "encounter": {
             "name": "peace test 2",
             "description": "Which would you like? a Potion or a Potato?",
@@ -35,7 +35,7 @@
         }
     },
     {
-        "id": 3,
+        "id": 2,
         "encounter": {
             "name": "testShop",
             "description": "A little shop sits before you",
@@ -55,7 +55,7 @@
         }
     },
     {
-        "id": 4,
+        "id": 3,
         "encounter": {
             "name": "testEvent2",
             "description": "This is a strange event",
@@ -65,8 +65,12 @@
                 " Run Around"
             ],
             "outcomes": [
-                {"dmg": 2},
-                {"dmg": 1}
+                {
+                    "dmg": 2
+                },
+                {
+                    "dmg": 1
+                }
             ]
         }
     }

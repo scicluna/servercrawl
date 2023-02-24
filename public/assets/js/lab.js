@@ -68,9 +68,22 @@ function createEntry(e){
     const inputs = document.querySelectorAll(".input")
     const inputlabels = document.querySelectorAll(".inputlabel")
     
+    //create new object for DB // change to switch later // if outcomes JSON.parse(input.value) -- may need sqaure bracket around it (can add it in post)
+    const labels = []
+    inputlabels.forEach(label=>{
+        labels.push(label.innerText)
+    })
+    const inputvalues = []
+    inputs.forEach(input=>{
+        let processedValue = input.value
+        if(input.value.includes(",")) processedValue = input.value.split(",")
+        inputvalues.push(processedValue)
+    })
     //create new object for DB
     const newEntry = {}
-    inputlabels.forEach((label, i)=>{newEntry[label.innerText] = inputs[i].value})
+    labels.forEach((label, i)=>{
+        newEntry[label] = inputvalues[i]
+    })
 
     //build out our fetch path
     let path;

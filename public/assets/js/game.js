@@ -1,186 +1,29 @@
 //CLASS IMPORTS
 import { Player } from "./classes/player.js"
-import { Monster } from "./classes/monster.js"
 import { Item } from "./classes/item.js"
+
+//IMPORT ROUTE
+import { routeRooms, routeMonsters, routeTreasure } from "./classes/route.js"
+
+//Handle Inventory/Stats for Player
+const hero = new Player("Hero", 20, 2, 0)
 
 //DOM SELECTION
 const contentArea = document.querySelector(".gamecontent")
 
 //KEY GLOBAL VARIABLES
-const ROUTELENGTH = 10 // controls length of the game
-let route; // going to create an array of objects that detail the rooms/encounters
-let routeMonsters; // going to create an array of objects that detail the monsters encountered
-let routeTreasure; // going to create an array of objects that detail the random treasure drops
 let pointer = 0 //keeps track of the current room
 
-//Handle Inventory/Stats for Player
-const hero = new Player("Hero", 20, 2, 0)
-
 //handles game initialization
-async function init(){
-    await rooms()
-    await monsters()
-    await treasure()
-    delve()
-}
-init() //calls for the game to begin
-
-//Generate Rooms
-async function rooms(){
-    const rooms = await generateRooms(ROUTELENGTH)
-    const encounteredRooms = randomEncounter(rooms) //creates an array of ious (promises)
-    const finalRooms = await Promise.all(encounteredRooms) // resolves all of the promises
-    route = finalRooms
-    console.log(route)
-}
-//pushes our json rooms into an array
-async function generateRooms(num){
-    const response = await fetch('/api/rooms')
-    const roomJson = await response.json()
-
-    const generatedRooms = []
-    for (let i=0; i<num; i++){
-        const randomNumber = rando(0, roomJson.length-1)
-        const newRoom = roomJson[randomNumber]
-        generatedRooms.push(newRoom)
-    }
-    return generatedRooms
-}
-//calculates random encounters within our rooms
-function randomEncounter(rooms){
-    const roomsWithEncounters = rooms.map(room=>{
-        const randomEncounter = rando(0, 100)
-        if (randomEncounter <= parseInt(room.room.battlePercent)) {
-            return addEncounter(room, "fight")
-        } else{
-            return addEncounter(room, "peace")
-        }
-    })
-    return roomsWithEncounters
-}
-//Allows me to add an encounter based on its type
-async function addEncounter(room, type){
-    const response = await fetch(`/api/encounters/${type}`)
-    const json = await response.json()
-    const randomIndex = rando(0, json.length-1)
-
-    return {...room, [type]: json[randomIndex]} //async functions return promises
-}
-
-//Handle Monster Generation
-async function monsters(){
-    const monsters = generateMonsters()
-    const formattedMonsters = await jsonMonsters(monsters)
-    const finalMonsters = classedMonsters(formattedMonsters)
-    routeMonsters = finalMonsters
-    console.log(routeMonsters)
-}
-//Creates an array of monster names
-function generateMonsters(){
-    const generatedMonsters = []
-    route.forEach(room=>{
-        const monsters = room.fight?.encounter.monsters
-        generatedMonsters.push(monsters)
-    })
-    return generatedMonsters
-}
-//Calls from the monsters api route and replaces the array of arrays of monster names into arrays of arrays of objects
-async function jsonMonsters(monsters){
-    const response = await fetch('/api/monsters')
-    const monstersJson = await response.json()
-
-    const mappedMonsters = monsters.map(monstergroup => {
-        if (monstergroup == null) return null
-        const groupedObjects = monstergroup.map(monster=>{
-            let object;
-            monstersJson.forEach(json => {
-                if (json.monster.name === monster) object = json.monster
-            })
-            return object
-        })
-        return groupedObjects
-    })
-    return mappedMonsters
-}
-//Takes the individual monster objects and transforms them using our Monster class into an array of arrays of monster objects
-function classedMonsters(monsterarray){
-    const classyMonsters = monsterarray.map(monstergroup=>{
-        if (monstergroup == null) return null
-        const monsterGroupWithClasses = monstergroup.map(monster=>{
-            return new Monster(monster?.name, monster?.hp, monster?.atk, monster?.def, monster?.img)
-        })
-        return monsterGroupWithClasses
-    })
-    return classyMonsters
-}
-
-//handles treasure generation
-async function treasure(){
-    const treasureParams = generateTreasureParams()
-    const generatedTreasure = await generateTreasure(treasureParams)
-    const finalTreasure = classedTreasure(generatedTreasure)
-
-    console.log(finalTreasure)
-    routeTreasure = finalTreasure
-}
-
-//takes the treasure paramaters from the room objects and creates an array of arrays of parameters
-function generateTreasureParams(){
-    const generatedTreasure = []
-    route.forEach(room=>{
-        const rarity = room.fight?.encounter.treasureRarity
-        const quantity = room.fight?.encounter.treasureAmount
-
-        if (rarity && quantity) {generatedTreasure.push({rarity, quantity})}
-        else generatedTreasure.push(null)
-    })
-    return generatedTreasure
-}
-
-//fetches from the treasure api and uses the parameters to randomly select items based on those parameters
-async function generateTreasure(params){
-    const response = await fetch('/api/treasure')
-    const treasureJson = await response.json()
-
-    const jsonItems = params.map(param=>{
-        if (param == null) return null
-        const {rarity, quantity} = param
-        
-        const potentialDrops = []
-        treasureJson.forEach(json => {
-            if (rarity == json.item.itemRarity){
-                potentialDrops.push(json.item)
-            }
-        })
-        const drops = []
-        for (let i=0; i<quantity; i++){
-            const randomNumber = rando(0, potentialDrops.length-1)
-            drops.push(potentialDrops[randomNumber])
-        }
-        return drops
-    }) 
-    return jsonItems
-}
-
-//uses the item JSONS to build out Item class objects
-function classedTreasure(arrayOfArrays){
-    const classedItems = arrayOfArrays.map(jsonarray=>{
-        if(jsonarray == null) return null
-        const classifedItems = jsonarray.map(json=>{
-            return new Item(json?.itemName, json?.itemType, json?.itemRarity, json?.itemAtk, json?.itemDef, json?.itemDmg, json?.itemHeal, json?.itemStatus)
-        })
-        return classifedItems
-    })
-    return classedItems
-}
+delve()
 
 //Route Gameplay to Either Battle or Peace
 function delve(){
     console.log(hero)
     contentArea.innerHTML = ''
-    if (route[pointer] == undefined) endScreen()
-    if (route[pointer]?.fight) fightStart()
-    if (route[pointer]?.peace) peaceStart()
+    if (routeRooms.route()[pointer] == undefined) endScreen()
+    if (routeRooms.route()[pointer]?.fight) fightStart()
+    if (routeRooms.route()[pointer]?.peace) peaceStart()
 }
 
 //Handle Gameplay (Battle)
@@ -251,7 +94,7 @@ function generatePlayerFightCard(){
 
 //handles the monster side of the fight
 function generateMonsterFightCard(){
-    const currentMonsters = routeMonsters[pointer]
+    const currentMonsters = routeMonsters.route()[pointer]
     
     currentMonsters.forEach(monster=>{
         const monsterCard = document.createElement("div")
@@ -318,20 +161,20 @@ function handleAtk(){
     let target;
     monsterSprites.forEach((sprite,i)=>{
         if (sprite.classList.contains("target")){
-            target = routeMonsters[pointer][i]
+            target = routeMonsters.route()[pointer][i]
         } 
     })
     hero.attackEnemy(target)
     updateHp()
     checkVictory()
-    if (routeMonsters[pointer] != null) monsterRetaliation()
+    if (routeMonsters.route()[pointer] != null) monsterRetaliation()
 }
 
 //updates the hp bars for both the player and the monsters
 function updateHp(){
     const monsterHealths = document.querySelectorAll(".monsterHealth")
     const playerHealth = document.querySelector(".playerHealth")
-    const monsters = routeMonsters[pointer]
+    const monsters = routeMonsters.route()[pointer]
     
     monsterHealths.forEach((health, i) => {
         if (monsters[i].hp > 0){
@@ -353,7 +196,7 @@ function updateHp(){
 
 //checks for the current status of all of the monsters -- should probably use a method for the monster
 function checkVictory(){
-    const monsters = routeMonsters[pointer]
+    const monsters = routeMonsters.route()[pointer]
     let deathCount = 0
 
     monsters.forEach(monster=>{
@@ -372,7 +215,7 @@ function checkVictory(){
 
 //Animation work later... but for now it handles basic monster retaliation
 function monsterRetaliation(){
-    const monsters = routeMonsters[pointer]
+    const monsters = routeMonsters.route()[pointer]
 
     monsters.forEach(monster => {
         if (monster.isAlive()) monster.attack(hero)
@@ -432,16 +275,16 @@ function useHealingConsumable(item){
     hero.consumeItem(item)
     updateHp()
     closeInventory()
-    if (routeMonsters[pointer] != null) monsterRetaliation()
+    if (routeMonsters.route()[pointer] != null) monsterRetaliation()
 }
 
 //handles looting a room after a fight encounter -- just adding 1 gp per monster killed right now, but will probably be a more reasonable value eventually
 function lootRoom(){
     if (routeTreasure[pointer] == null) return
-    routeTreasure[pointer].forEach(treasure=>{
+    routeTreasure.route()[pointer].forEach(treasure=>{
         hero.lootItem(treasure)
     })
-    routeMonsters.forEach(monster=>{
+    routeMonsters.route()[pointer].forEach(monster=>{
         hero.gp++
     })
 }
@@ -453,7 +296,7 @@ function peaceStart(){
 
 //runs a peace function depending on its type
 function initPeaceType(){
-    const type = route[pointer].peace.encounter.type
+    const type = routeRooms.route()[pointer].peace.encounter.type
     switch(type){
         case "dialogue": initDialogue()
         break;
@@ -473,7 +316,7 @@ function initDialogue(){
 }
 //handles peace descriptions
 function generateDescription(){
-    const description = route[pointer].peace.encounter.description
+    const description = routeRooms.route()[pointer].peace.encounter.description
     
     const peaceBlock = document.createElement("div")
     peaceBlock.classList.add("peaceblock")
@@ -487,7 +330,7 @@ function generateDescription(){
 }
 //handles peace options
 function generateOptions(){
-    const options = route[pointer].peace.encounter.options
+    const options = routeRooms.route()[pointer].peace.encounter.options
 
     const optionsDiv = document.createElement("div")
     optionsDiv.classList.add("optionsdiv")
@@ -562,7 +405,7 @@ function initEvent(){
 
 //handles event button functionality - JSON generator for this is still broken
 function handleEvent(e){
-    const event = route[pointer].peace.encounter
+    const event = routeRooms.route()[pointer].peace.encounter
     const {options} = event // ["option 1", "option 2", ...]
     const {outcomes} = event // ["{dmg: 5}", "{heal: 5}""] // want to either deal damage or heal based on the object. // Must manually correct the JSON file for now
     
@@ -590,6 +433,7 @@ function endScreen(){
 
 
 //TODO: 
+//ADD ROUTE CLASS
 //ADD END(WIN) CARD
 //ADD DEFEAT CARD
 //ADD BATTLE ANIMATIONS
