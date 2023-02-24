@@ -73,4 +73,9 @@ export class Player{
             enemy.hp -= this.totalAtk + enemy.def 
         }
     }
+
+    isAlive(){
+        if (this.hp > 0) return true
+        else return false
+    }
 }

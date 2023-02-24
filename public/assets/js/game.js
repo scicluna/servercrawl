@@ -1,18 +1,21 @@
 //CLASS IMPORTS
 import { Player } from "./classes/player.js"
 import { Item } from "./classes/item.js"
+import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure } from "./classes/route.js"
 
-//IMPORT ROUTE
-import { routeRooms, routeMonsters, routeTreasure } from "./classes/route.js"
-
-//Handle Inventory/Stats for Player
-const hero = new Player("Hero", 20, 2, 0)
+//Testing
+console.log(routeRooms)
+console.log(routeMonsters)
+console.log(routeTreasure)
 
 //DOM SELECTION
 const contentArea = document.querySelector(".gamecontent")
 
 //KEY GLOBAL VARIABLES
 let pointer = 0 //keeps track of the current room
+
+//Handle Inventory/Stats for Player
+const hero = new Player("Hero", 20, 2, 0)
 
 //handles game initialization
 delve()
@@ -30,8 +33,8 @@ function delve(){
 function fightStart(){
     generateFightDivs()
     generatePlayerFightCard()
-    updateHp()
     generateMonsterFightCard()
+    updateHp()
     initTarget()
     initFightOptions()
 }
@@ -121,9 +124,21 @@ function generateMonsterFightCard(){
 //handles the targetting mechanic
 function initTarget(){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
-    monsterSprites[0].classList.add("target") // eventually change this so i can call it and have it select the first non-dead target
-    
+
     monsterSprites.forEach(sprite=>{
+        sprite.classList.remove("target")
+        sprite.removeEventListener("click", newTarget)
+    })
+
+    for (let [i, monster] of routeMonsters.route()[pointer].entries()){
+        if (monster.isAlive()) {
+            monsterSprites[i].classList.add("target")
+            break;
+        }
+    }
+    
+    monsterSprites.forEach((sprite, i)=>{
+        if (!routeMonsters.route()[pointer][i].isAlive()) return
         sprite.addEventListener("click", newTarget)
     })
 }
@@ -172,26 +187,29 @@ function handleAtk(){
 
 //updates the hp bars for both the player and the monsters
 function updateHp(){
+    const monsterSprites = document.querySelectorAll(".monsterSprite")
     const monsterHealths = document.querySelectorAll(".monsterHealth")
     const playerHealth = document.querySelector(".playerHealth")
     const monsters = routeMonsters.route()[pointer]
     
     monsterHealths.forEach((health, i) => {
-        if (monsters[i].hp > 0){
+        if (monsters[i].isAlive()){
             health.innerText = `${monsters[i].hp}/${monsters[i].maxHp}`
             health.style.setProperty("--hpfill", `${(monsters[i].hp/monsters[i].maxHp)*100}%`)
         } else {
             health.innerText = `0/${monsters[i].maxHp}`
             health.style.setProperty("--hpfill", 0)
+            if (monsterSprites[i].classList.contains("target")) initTarget()
         }
     })
-    if (hero.hp > 0){
+    if (hero.isAlive()){
         playerHealth.innerText = `${hero.hp}/${hero.maxHp}`
         playerHealth.style.setProperty("--hpfill", `${(hero.hp/hero.maxHp)*100}%`)
     } else {
         playerHealth.innerText = `0/${hero.maxHp}`
         playerHealth.style.setProperty("--hpfill", 0)
     }
+    
 }
 
 //checks for the current status of all of the monsters -- should probably use a method for the monster
@@ -204,8 +222,8 @@ function checkVictory(){
     })
     if (deathCount == monsters.length) {
         console.log("VICTORY")
-        pointer++
         lootRoom()
+        pointer++
         delve()
     }
     if (hero.hp <= 0){
@@ -234,18 +252,16 @@ function handleItm(){
     const itemContainer = document.createElement("div")
     itemContainer.classList.add("itemcontainer")
 
-    const itemList = document.createElement("ul")
-    itemList.classList.add("itemlist")
 
     hero.openInventory().forEach(item=>{
-        const thing = document.createElement("li")
+        const thing = document.createElement("div")
         thing.innerText = item?.name || `gp ${hero.gp}`
         thing.item = item
         thing.classList.add("thing")
         thing.addEventListener("click", itemOptions)
-        itemList.appendChild(thing)
+        itemContainer.appendChild(thing)
     })
-    itemContainer.appendChild(itemList)
+
     contentArea.append(itemContainer)
     playerItem.addEventListener("click", closeInventory)
 }
@@ -280,7 +296,6 @@ function useHealingConsumable(item){
 
 //handles looting a room after a fight encounter -- just adding 1 gp per monster killed right now, but will probably be a more reasonable value eventually
 function lootRoom(){
-    if (routeTreasure[pointer] == null) return
     routeTreasure.route()[pointer].forEach(treasure=>{
         hero.lootItem(treasure)
     })
@@ -433,12 +448,10 @@ function endScreen(){
 
 
 //TODO: 
-//ADD ROUTE CLASS
 //ADD END(WIN) CARD
 //ADD DEFEAT CARD
 //ADD BATTLE ANIMATIONS
 //IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
-//MAJOR REFACTOR
 //ADD MORE MONSTER VARIETY
 //GIVE MONSTERS "SPECIAL" ATTACKS
 //ITEM ACQUIRED MESSAGE

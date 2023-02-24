@@ -2,7 +2,7 @@ const ROUTELENGTH = 10
 import { Monster } from "./monster.js"
 import { Item } from "./item.js"
 
-export class Route{
+class Route{
     constructor(type, routeArray){
         this.len = ROUTELENGTH
         this.type = type
@@ -24,7 +24,7 @@ console.log(routeMonsters)
 console.log(routeTreasure)
 
 //Generate Rooms
-export async function rooms(){
+async function rooms(){
     const rooms = await generateRooms(ROUTELENGTH)
     const encounteredRooms = randomEncounter(rooms) //creates an array of ious (promises)
     const finalRooms = await Promise.all(encounteredRooms) // resolves all of the promises
@@ -133,7 +133,7 @@ function generateTreasureParams(){
 }
 
 //fetches from the treasure api and uses the parameters to randomly select items based on those parameters
-async function generateTreasure(params){
+export async function generateTreasure(params){
     const response = await fetch('/api/treasure')
     const treasureJson = await response.json()
 
@@ -158,7 +158,7 @@ async function generateTreasure(params){
 }
 
 //uses the item JSONS to build out Item class objects
-function classedTreasure(arrayOfArrays){
+export function classedTreasure(arrayOfArrays){
     const classedItems = arrayOfArrays.map(jsonarray=>{
         if(jsonarray == null) return null
         const classifedItems = jsonarray.map(json=>{
