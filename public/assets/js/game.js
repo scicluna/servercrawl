@@ -2,6 +2,7 @@
 import { Player } from "./classes/player.js"
 import { Item } from "./classes/item.js"
 import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure } from "./classes/route.js"
+import { playAnimation } from "./animations.js"
 
 //Testing
 console.log(routeRooms)
@@ -102,6 +103,7 @@ function generateMonsterFightCard(){
     currentMonsters.forEach(monster=>{
         const monsterCard = document.createElement("div")
         monsterCard.classList.add("card")
+        monsterCard.classList.add("monstercard")
         
         const monsterSprite = document.createElement("img")
         monsterSprite.src=`../img/${monster.img}`
@@ -173,13 +175,18 @@ function handleOption(e){
 //Animation work later... for now just handles basic attacks
 function handleAtk(){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
+    const monsterCards = document.querySelectorAll(".monstercard")
+
     let target;
+    let targetCard;
     monsterSprites.forEach((sprite,i)=>{
         if (sprite.classList.contains("target")){
+            targetCard = monsterCards[i]
             target = routeMonsters.route()[pointer][i]
         } 
     })
     hero.attackEnemy(target)
+    playAnimation(hero.checkBestWeapon(), targetCard)
     updateHp()
     checkVictory()
     if (routeMonsters.route()[pointer] != null) monsterRetaliation()
@@ -450,7 +457,6 @@ function endScreen(){
 //TODO: 
 //ADD END(WIN) CARD
 //ADD DEFEAT CARD
-//ADD BATTLE ANIMATIONS
 //IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
 //ADD MORE MONSTER VARIETY
 //GIVE MONSTERS "SPECIAL" ATTACKS
@@ -458,5 +464,4 @@ function endScreen(){
 //PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF) // "NEXT" CARD
 //MORE OF EVERYTHING
 //TWEEK NUMBERS
-//FILE RESTRUCTURE (MORE JS FILES)
 //BOSS FIGHT 

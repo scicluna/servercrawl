@@ -66,8 +66,10 @@ body{
 
 .playerSprite,
 .monsterSprite{
+    position: relative;
     height: 20vh;
     width: 20vw;
+    z-index: 1;
 }
 
 .monsterSprite{
@@ -188,3 +190,47 @@ body{
     cursor: pointer;
     color:rgb(255, 255, 255)
 }
+
+
+
+
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////ANIMATIONS////////////////////////////////////// */
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+
+.monsterCard{
+    position: relative
+}
+
+.knifeanimation{
+    position: absolute;
+    top: 7vh;
+    height: 20vh;
+    width: 0vw;
+    padding: 5px;
+    z-index:3;
+
+    animation: slash .5s;
+}
+
+@keyframes slash{
+    0%{
+        left: 5%;
+        width: 0%;
+      }
+    
+    25%{
+        left: 10%;
+        width: 66%;
+      }
+        
+    50%{
+        left: 12%;
+        width:90%;
+      }
+    100%{
+        left: 15%;
+        width: 90%;
+        display:none;
+      }
+  }

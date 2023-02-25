@@ -19,9 +19,7 @@ class Route{
 export const routeRooms = new Route("rooms", await rooms()); // going to create an array of objects that detail the rooms/encounters
 export const routeMonsters = new Route("monsters", await monsters()); // going to create an array of objects that detail the monsters encountered
 export const routeTreasure = new Route("treasure", await treasure()); // going to create an array of objects that detail the random treasure drops
-console.log(routeRooms)
-console.log(routeMonsters)
-console.log(routeTreasure)
+
 
 //Generate Rooms
 async function rooms(){
