@@ -60,7 +60,10 @@ export class Player{
     }
 
     //handles looting items
-    lootItem(item){this.inventory = [...this.inventory, item].flat(Infinity)}
+    lootItem(item){
+        this.inventory = [...this.inventory, item].flat(Infinity)
+        return lootAcquired(item)
+    }
 
     //removes item from inventory
     consumeItem(item){this.inventory = this.inventory.filter(thing => thing != item)}
@@ -78,4 +81,27 @@ export class Player{
         if (this.hp > 0) return true
         else return false
     }
+}
+
+function lootAcquired(item){ //TODO
+    let loot = [item]
+    loot = loot.flat(Infinity)
+
+    const acquisitionDiv = document.createElement("div")
+    acquisitionDiv.classList.add("acquisitiondiv")
+
+    const acquisitionTxt = document.createElement("h3")
+    acquisitionTxt.classList.add("acquisitiontxt")
+    acquisitionTxt.innerText = `You have acquired${loot.map(thing=> " " + thing.name)}`
+
+    const closeBtn = document.createElement("button")
+    closeBtn.classList.add("closebtn")
+    closeBtn.innerText = "Close"
+    closeBtn.addEventListener("click", () => {
+        acquisitionDiv.remove()
+    })
+
+    acquisitionDiv.append(acquisitionTxt)
+    acquisitionDiv.append(closeBtn)
+    document.querySelector(".gamearea").append(acquisitionDiv)
 }

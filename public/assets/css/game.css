@@ -262,7 +262,39 @@ body{
     background-color: rgba(0, 0, 0, 0.216);
 }
 
+.delvediv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:100%;
+    cursor: pointer;
+}
 
+.acquisitiondiv {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    background-color: rgb(59, 56, 56);
+    height:25vh;
+    width:25vw;
+    bottom:50;
+    left:50;
+}
+
+.acquisitiondiv>button {
+    font: 1.1rem;
+    color:rgba(255, 255, 255, 0.777);
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 15%;
+    border: 1px rgba(0, 0, 0, 0) solid;
+}
+
+.acquisitiondiv>button:hover {
+    color: rgb(255, 255, 255);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////// */
 /* ////////////////////////////////////////ANIMATIONS////////////////////////////////////// */

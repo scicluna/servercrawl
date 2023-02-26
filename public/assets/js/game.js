@@ -19,13 +19,27 @@ let pointer = 0 //keeps track of the current room
 let hero = new Player("Hero", 20, 2, 0)
 
 //handles game initialization
-delve()
+readyToDelve()
+
+function readyToDelve(){
+    contentArea.innerHTML = ''
+    generateStatus()
+    if (routeRooms.route()[pointer] == undefined) return endScreen("YOU HAVE BRAVED THE DUNGEON!\n CONGRATULATIONS!")
+
+    const delveDiv = document.createElement("div")
+    const delveTxt = document.createElement("h3")
+    delveTxt.innerText = `Welcome to Room ${pointer+1}\nClick to delve deeper` 
+    delveDiv.classList.add("delvediv")
+
+    delveDiv.addEventListener("click", delve)
+    delveDiv.append(delveTxt)
+    contentArea.append(delveDiv)
+}
 
 //Route Gameplay to Either Battle or Peace
 function delve(){
     console.log(hero)
     contentArea.innerHTML = ''
-    if (routeRooms.route()[pointer] == undefined) endScreen("YOU HAVE BRAVED THE DUNGEON!\n CONGRATULATIONS!")
     if (routeRooms.route()[pointer]?.fight) fightStart()
     if (routeRooms.route()[pointer]?.peace) peaceStart()
 }
@@ -198,6 +212,8 @@ function updateHp(){
     const playerHealth = document.querySelector(".playerHealth")
     const monsters = routeMonsters.route()[pointer]
     
+    if(!playerHealth) return
+
     monsterHealths.forEach((health, i) => {
         if (monsters[i].isAlive()){
             health.innerText = `${monsters[i].hp}/${monsters[i].maxHp}`
@@ -234,7 +250,7 @@ function checkVictory(){
         console.log("VICTORY")
         lootRoom()
         pointer++
-        delve()
+        readyToDelve()
     }
     if (hero.hp <= 0){
         console.log("DEFEAT")
@@ -443,7 +459,7 @@ async function handleDialogueOption(e){
         }
     })
     pointer++
-    delve()
+    readyToDelve()
 }
 
 function initShop(){
@@ -471,7 +487,7 @@ async function handleShop(e){
         }
     })
     pointer++
-    delve()
+    readyToDelve()
 }
 
 //What to do... Basically events tied to basic functions that hurt, heal, or give loot or a combination. How do we make these events and tie em to encounters?
@@ -503,7 +519,7 @@ function handleEvent(e){
         }
     })
     pointer++
-    delve()
+    readyToDelve()
 }
 
 function endScreen(message){
@@ -541,9 +557,6 @@ function endScreen(message){
 function gameReset(){location.reload()}
 
 //TODO: 
-//ITEM ACQUIRED MESSAGE
-//PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF) // "NEXT" CARD
-
 //IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM (healingConsumables, damageConsumables, weapon, armor)
 //ADD MORE MONSTER VARIETY
 //GIVE MONSTERS "SPECIAL" ATTACKS
