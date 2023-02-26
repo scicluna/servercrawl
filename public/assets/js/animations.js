@@ -1,22 +1,36 @@
 //handles attack animations
-export const playAnimation = (weapon, targetCard) => {
+export const playAnimation = (weapon, targetSprite) => {
     switch(weapon.name){
-        case "knife": slashAnimation(targetCard)
+        case "knife": punctureAnimation(targetSprite)
+        break;
+        case "sword": slashAnimation(targetSprite)
         break;
 
         default: break;
     }
 }
 
-function slashAnimation(targetCard){
-    console.log(targetCard) // target sprite is the literal HTML element
-    const animationDiv = document.createElement("img")
+function slashAnimation(targetSprite){ //400ms
+    const animationDiv = document.createElement("div")
     animationDiv.classList.add("knifeanimation")
-    animationDiv.src = "../img/slash.png"
+    animationDiv.style.backgroundImage = "url(../img/slash.png)"
 
-    targetCard.append(animationDiv)
-    
+    targetSprite.append(animationDiv)
+
     setInterval(()=>{
         animationDiv.remove()
-    }, 1000)
+    }, 400)
 }
+
+function punctureAnimation(targetSprite){
+    const animationDiv = document.createElement("div")
+    animationDiv.classList.add("punctureanimation")
+
+    targetSprite.append(animationDiv)
+
+    setInterval(()=>{
+        animationDiv.remove()
+    }, 400)
+}
+
+//////ALL ANIMATIONS HERE

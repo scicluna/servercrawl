@@ -16,7 +16,7 @@ const contentArea = document.querySelector(".gamecontent")
 let pointer = 0 //keeps track of the current room
 
 //Handle Inventory/Stats for Player
-const hero = new Player("Hero", 20, 2, 0)
+let hero = new Player("Hero", 20, 2, 0)
 
 //handles game initialization
 delve()
@@ -25,7 +25,7 @@ delve()
 function delve(){
     console.log(hero)
     contentArea.innerHTML = ''
-    if (routeRooms.route()[pointer] == undefined) endScreen()
+    if (routeRooms.route()[pointer] == undefined) endScreen("YOU HAVE BRAVED THE DUNGEON!\n CONGRATULATIONS!")
     if (routeRooms.route()[pointer]?.fight) fightStart()
     if (routeRooms.route()[pointer]?.peace) peaceStart()
 }
@@ -105,8 +105,8 @@ function generateMonsterFightCard(){
         monsterCard.classList.add("card")
         monsterCard.classList.add("monstercard")
         
-        const monsterSprite = document.createElement("img")
-        monsterSprite.src=`../img/${monster.img}`
+        const monsterSprite = document.createElement("div")
+        monsterSprite.style.backgroundImage=`url(../img/${monster.img})`
         monsterSprite.classList.add("monsterSprite")
 
         const monsterHealthShell = document.createElement ("div")
@@ -175,18 +175,17 @@ function handleOption(e){
 //Animation work later... for now just handles basic attacks
 function handleAtk(){
     const monsterSprites = document.querySelectorAll(".monsterSprite")
-    const monsterCards = document.querySelectorAll(".monstercard")
 
     let target;
-    let targetCard;
+    let targetSprite;
     monsterSprites.forEach((sprite,i)=>{
         if (sprite.classList.contains("target")){
-            targetCard = monsterCards[i]
+            targetSprite = sprite
             target = routeMonsters.route()[pointer][i]
         } 
     })
     hero.attackEnemy(target)
-    playAnimation(hero.checkBestWeapon(), targetCard)
+    playAnimation(hero.checkBestWeapon(), targetSprite)
     updateHp()
     checkVictory()
     if (routeMonsters.route()[pointer] != null) monsterRetaliation()
@@ -215,6 +214,10 @@ function updateHp(){
     } else {
         playerHealth.innerText = `0/${hero.maxHp}`
         playerHealth.style.setProperty("--hpfill", 0)
+        setInterval(()=>{
+            endScreen("YOU HAVE DIED!")
+        }, 500)
+        
     }
     
 }
@@ -252,7 +255,7 @@ function monsterRetaliation(){
 //generates the item menu and gives them functionality
 function handleItm(){
     const playerItem = document.querySelector(".playerItem")
-    playerItem.removeEventListener("click", handleOption)
+    if (playerItem) playerItem.removeEventListener("click", handleOption)
 
     if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
 
@@ -265,19 +268,22 @@ function handleItm(){
         thing.innerText = item?.name || `gp ${hero.gp}`
         thing.item = item
         thing.classList.add("thing")
-        thing.addEventListener("click", itemOptions)
+        if (playerItem) thing.addEventListener("click", itemOptions)
         itemContainer.appendChild(thing)
     })
 
     contentArea.append(itemContainer)
-    playerItem.addEventListener("click", closeInventory)
+    if (playerItem) playerItem.addEventListener("click", closeInventory)
+    else document.querySelector(".inventorybtn").addEventListener("click", closeInventory)
 }
-//handles the closing of the item inventory
+//handles the closing of the item inventory -- doubles for peacetime inventory closes. Super ugly code, i hate this.
 function closeInventory(){
     const playerItem = document.querySelector(".playerItem")
     if(document.querySelectorAll(".itemcontainer").length > 0) document.querySelectorAll(".itemcontainer").forEach(container=>container.remove())
-    playerItem.removeEventListener("click", closeInventory)
-    playerItem.addEventListener("click", handleOption)
+    if (playerItem) playerItem.removeEventListener("click", closeInventory)
+    else document.querySelector(".inventorybtn").removeEventListener("click", closeInventory)
+    if (playerItem) playerItem.addEventListener("click", handleOption)
+    else document.querySelector(".inventorybtn").addEventListener("click", handleItm)
 }
 //add more options and functions later, all handled near this block
 function itemOptions(e){
@@ -334,6 +340,7 @@ function initPeaceType(){
 function initDialogue(){
     generateDescription()
     generateOptions()
+    generateStatus()
     initOptions(handleDialogueOption)
 }
 //handles peace descriptions
@@ -365,6 +372,54 @@ function generateOptions(){
     })
     document.querySelector(".peaceblock").append(optionsDiv)
 }
+
+function generateStatus(){
+    const statusButton = document.createElement("button")
+    statusButton.classList.add("statusbtn")
+    statusButton.innerText = "STATUS"
+    statusButton.addEventListener("click", addStatusMenu)
+    contentArea.append(statusButton)
+
+    const inventoryButton = document.createElement("button")
+    inventoryButton.classList.add("inventorybtn")
+    inventoryButton.innerText = "INVENTORY"
+    inventoryButton.addEventListener("click", handleItm)
+    contentArea.append(inventoryButton)
+}
+
+function addStatusMenu(){
+    if (document.querySelector(".statusmenu")) return document.querySelector(".statusmenu").remove() //far superior to the inventory system
+    const statusmenu = document.createElement("div")
+    statusmenu.classList.add("statusmenu")
+
+    const hp = document.createElement("div")
+    hp.innerText = `Hp: ${hero.hp}/${hero.maxHp}`
+
+    const atk = document.createElement("div")
+    atk.innerText = `Attack: ${hero.totalAtk}`
+
+    const def = document.createElement("div")
+    def.innerText = `Defense: ${hero.totalDef}`
+
+    const bestWeapon = document.createElement("div")
+    bestWeapon.innerText = `Equipped Weapon: ${hero.checkBestWeapon()?.name || "nothing"}`  
+
+    const bestArmor = document.createElement("div")
+    bestArmor.innerText = `Equipped Armor: ${hero.checkBestArmor()?.name || "nothing"}`
+
+    const roomCount = document.createElement("p")
+    roomCount.innerText = `Room: ${pointer+1}`
+
+    statusmenu.append(hp)
+    statusmenu.append(atk)
+    statusmenu.append(def)
+    statusmenu.append(bestWeapon)
+    statusmenu.append(bestArmor)
+    statusmenu.append(roomCount)
+    contentArea.append(statusmenu)
+}
+
+
 //initializes the peace options and passes in the appropriate onclick function
 function initOptions(eventFunction){
     const options = document.querySelectorAll(".optiondiv")
@@ -394,6 +449,7 @@ async function handleDialogueOption(e){
 function initShop(){
     generateDescription()
     generateOptions()
+    generateStatus()
     initOptions(handleShop)
 }
 
@@ -422,6 +478,7 @@ async function handleShop(e){
 function initEvent(){
     generateDescription()
     generateOptions()
+    generateStatus()
     initOptions(handleEvent)
 }
 
@@ -442,26 +499,55 @@ function handleEvent(e){
                 const finalTreasure = classedTreasure(generatedTreasure)
                 hero.lootItem(finalTreasure)
             }
-            hero.checkHp()
+            if (!hero.isAlive()) endScreen("YOU HAVE DIED!")
         }
     })
     pointer++
     delve()
 }
 
-function endScreen(){
-    console.log("YOU WIN")
+function endScreen(message){
+    contentArea.innerHTML = ""
+    const areaDiv = document.createElement("div")
+    areaDiv.classList.add("endarea")
+
+    const msg = document.createElement("div")
+    msg.classList.add("endmessage")
+    
+    const bigText = document.createElement("h1")
+    bigText.innerText = `${message}`
+
+    const buttonDiv = document.createElement("div")
+    buttonDiv.classList.add("endbuttons")
+
+    const tryAgainBtn = document.createElement("button")
+    tryAgainBtn.classList.add("endtryagainbutton")
+    tryAgainBtn.innerText = "Play Again?"
+    tryAgainBtn.addEventListener("click", gameReset)
+
+    const backToTitleBtn = document.createElement("a")
+    backToTitleBtn.classList.add("endbackbutton")
+    backToTitleBtn.href = "/"
+    backToTitleBtn.innerText = "Back"
+
+    buttonDiv.append(tryAgainBtn)
+    buttonDiv.append(backToTitleBtn)
+    msg.append(bigText)
+    msg.append(buttonDiv)
+    areaDiv.append(msg)
+    contentArea.append(areaDiv)
 }
 
+function gameReset(){location.reload()}
 
 //TODO: 
-//ADD END(WIN) CARD
-//ADD DEFEAT CARD
-//IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM
-//ADD MORE MONSTER VARIETY
-//GIVE MONSTERS "SPECIAL" ATTACKS
 //ITEM ACQUIRED MESSAGE
 //PAUSE BETWEEN ROOMS (CAN CHECK INVENTORY AND STUFF) // "NEXT" CARD
-//MORE OF EVERYTHING
+
+//IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM (healingConsumables, damageConsumables, weapon, armor)
+//ADD MORE MONSTER VARIETY
+//GIVE MONSTERS "SPECIAL" ATTACKS
+
+//MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs)
 //TWEEK NUMBERS
 //BOSS FIGHT 
