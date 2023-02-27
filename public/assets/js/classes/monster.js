@@ -23,7 +23,7 @@ export class Monster{
 
     //handles basic monster attacks
     basicAttack(target){
-        if (this.atk >= target.totalDef){
+        if (this.atk > target.totalDef){
             target.hp = target.hp - this.atk + target.totalDef
         } else target.hp--
     }

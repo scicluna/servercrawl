@@ -104,7 +104,7 @@ function generateMonsters(){
     return generatedMonsters
 }
 //Calls from the monsters api route and replaces the array of arrays of monster names into arrays of arrays of objects
-async function jsonMonsters(monsters){
+export async function jsonMonsters(monsters){
     const response = await fetch('/api/monsters')
     const monstersJson = await response.json()
 
@@ -122,7 +122,7 @@ async function jsonMonsters(monsters){
     return mappedMonsters
 }
 //Takes the individual monster objects and transforms them using our Monster class into an array of arrays of monster objects
-function classedMonsters(monsterarray){
+export function classedMonsters(monsterarray){
     const classyMonsters = monsterarray.map(monstergroup=>{
         if (monstergroup == null) return null
         const monsterGroupWithClasses = monstergroup.map(monster=>{

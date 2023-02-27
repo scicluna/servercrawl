@@ -2,7 +2,7 @@
     {
         "id": 0,
         "encounter": {
-            "name": "testEvent",
+            "name": "suspiciousTreasure",
             "description": "You come across a suspicious treasurechest.",
             "type": "event",
             "options": [
@@ -11,7 +11,7 @@
             ],
             "outcomes": [
                 {
-                    "dmg": 10,
+                    "dmg": 7,
                     "lootQuality": "common",
                     "lootQuantity": 2
                 },
@@ -24,12 +24,12 @@
     {
         "id": 1,
         "encounter": {
-            "name": "peace test 2",
-            "description": "Which would you like? a Potion or a Potato?",
+            "name": "itemFunction",
+            "description": "A function wishes to grant you a boon. Which do you take?",
             "type": "dialogue",
             "options": [
                 "potion",
-                "potato"
+                "shield"
             ],
             "outcomes": ""
         }
@@ -37,41 +37,48 @@
     {
         "id": 2,
         "encounter": {
-            "name": "testShop",
-            "description": "A little shop sits before you",
+            "name": "apiShop",
+            "description": "An api offers you items in exchange for money.",
             "type": "shop",
             "options": [
                 "potion",
                 "potato",
-                "campfire"
+                "bomb"
             ],
-            "outcomes": [
-                {},
-                {},
-                {
-                    "heal": 15
-                }
-            ]
+            "outcomes": ""
         }
     },
     {
         "id": 3,
         "encounter": {
-            "name": "testEvent2",
-            "description": "This is a strange event",
+            "name": "dataRush",
+            "description": "The codebase is broken. Endless pits of data rush towards you.",
             "type": "event",
             "options": [
-                "Jump",
-                " Run Around"
+                "Jump over them",
+                "Attempt to fix the bugs"
             ],
             "outcomes": [
                 {
                     "dmg": 2
                 },
                 {
-                    "dmg": 1
+                    "monster": "error"
                 }
             ]
+        }
+    },
+    {
+        "id":4,
+        "encounter": {
+            "name": "ternaryOperator",
+            "description": "? Damage : Healing",
+            "type": "dialogue",
+            "options": [
+                "bomb",
+                "potion"
+            ],
+            "outcomes": ""
         }
     }
 ]

@@ -1,7 +1,8 @@
 //CLASS IMPORTS
 import { Player } from "./classes/player.js"
 import { Item } from "./classes/item.js"
-import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure } from "./classes/route.js"
+import { Monster } from "./classes/monster.js"
+import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure, jsonMonsters, classedMonsters } from "./classes/route.js"
 import { playAnimation } from "./animations.js"
 
 //Testing
@@ -201,8 +202,9 @@ function handleAtk(){
     hero.attackEnemy(target)
     playAnimation(hero.checkBestWeapon(), targetSprite)
     updateHp()
+    monsterRetaliation()
     checkVictory()
-    if (routeMonsters.route()[pointer] != null) monsterRetaliation()
+    
 }
 
 //updates the hp bars for both the player and the monsters
@@ -241,6 +243,9 @@ function updateHp(){
 //checks for the current status of all of the monsters -- should probably use a method for the monster
 function checkVictory(){
     const monsters = routeMonsters.route()[pointer]
+
+    if (!monsters) return
+
     let deathCount = 0
 
     monsters.forEach(monster=>{
@@ -523,10 +528,34 @@ function handleEvent(e){
     
     options.forEach(async (option, i)=>{
         if(e.target.innerText == option){
-            const {dmg=null, heal=null, lootQuality=null, lootQuantity=null} = outcomes[i] //All event attributes listed here  
+            const {dmg=null, heal=null, lootQuality=null, lootQuantity=null, monster=null} = outcomes[i] //All event attributes listed here  
             //All event attributes dealt with here
             if (dmg) hero.hp -= parseInt(dmg)
             if (heal) hero.hp += parseInt(heal)
+            if (monster) {
+                const response = await fetch("/api/monsters")
+                const monsterjson = await response.json()
+                
+                let monsterSelection = []
+                monsterjson.forEach(json => {
+                if (json.monster.name == monster)
+                    monsterSelection.push(json.monster)
+                })
+
+                const encounteredMonster =monsterSelection.map(monster=>{
+                    return new Monster(monster.name, monster.hp, monster.atk, monster.def, monster.img, monster.special)
+                })
+
+                console.log(encounteredMonster)
+                console.log(routeMonsters.route())
+                if (!routeMonsters.route()[pointer]) return
+
+                encounteredMonster.forEach(monster => {
+                    routeMonsters.route()[pointer].splice(0, 0, monster)
+                })
+
+
+            }
             if (lootQuality && lootQuantity) {
                 const generatedTreasure = await generateTreasure([{rarity: lootQuality, quantity: lootQuantity}])
                 const finalTreasure = classedTreasure(generatedTreasure)
@@ -574,9 +603,8 @@ function endScreen(message){
 function gameReset(){location.reload()}
 
 //TODO: 
-//GIVE MONSTERS "SPECIAL" ATTACKS (STATUS ON THEIR ATTACKS? HOW THE FUCK DO I DO THIS)
-//TWEEK NUMBERS
-//TWEEK EVENTS TO BE BETTER AND COOLER
-//SHOP INTERFACE REVAMP
+//TWEEK NUMBERS (room encounter/rates etc...)
+//SHOP INTERFACE REVAMP (display gold costs and current gold)
+//NEW TITLE PAGE (current one is ugly --- maybe one that looks like serverspace type scifi)
 
-//MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs)
+//MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs) -- optional
