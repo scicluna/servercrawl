@@ -2,21 +2,57 @@
     {
         "id": 0,
         "monster": {
-            "name": "testMonster",
+            "name": "html",
             "hp": 10,
             "atk": 1,
             "def": 0,
-            "img": "placeholder.png"
+            "img": "html.png",
+            "special": null
         }
     },
     {
         "id": 1,
         "monster": {
-            "name": "slime",
-            "atk": "1",
-            "hp": "12",
+            "name": "css",
+            "atk": "2",
+            "hp": "15",
             "def": "0",
-            "img": "placeholder.png"
+            "img": "css.png",
+            "special": null
+        }
+    },
+    {
+        "id": 2,
+        "monster": {
+            "name": "javascript",
+            "atk": "2",
+            "hp": "20",
+            "def": "1",
+            "img": "js.png",
+            "special": null
+        }
+    },
+    {
+        "id": 3,
+        "monster": {
+            "name": "error",
+            "atk": "2",
+            "hp": "15",
+            "def": "0",
+            "img": "placeholder.png",
+            "special": null
+        }
+    },
+    {
+        "id": 4,
+        "monster": {
+            "name": "nodejs",
+            "atk": "3",
+            "hp": "20",
+            "def": "1",
+            "img": "node.png",
+            "special": null
         }
     }
+
 ]

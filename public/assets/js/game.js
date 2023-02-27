@@ -340,6 +340,8 @@ function useDamageConsumable(item){
 
 //handles looting a room after a fight encounter -- just adding 1 gp per monster killed right now, but will probably be a more reasonable value eventually
 function lootRoom(){
+    if (!routeTreasure.route()[pointer]) return
+
     routeTreasure.route()[pointer].forEach(treasure=>{
         hero.lootItem(treasure)
     })
@@ -572,10 +574,9 @@ function endScreen(message){
 function gameReset(){location.reload()}
 
 //TODO: 
-//ADD MORE MONSTER VARIETY (JSONS, JAVASCRIPT, MISSINGNO, HTML, CSS)
 //GIVE MONSTERS "SPECIAL" ATTACKS (STATUS ON THEIR ATTACKS? HOW THE FUCK DO I DO THIS)
-
 //TWEEK NUMBERS
-//BOSS FIGHT 
+//TWEEK EVENTS TO BE BETTER AND COOLER
+//SHOP INTERFACE REVAMP
 
 //MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs)

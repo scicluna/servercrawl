@@ -4,14 +4,38 @@ import { Item } from "./item.js"
 
 class Route{
     constructor(type, routeArray){
-        this.len = ROUTELENGTH
+        this.len = ROUTELENGTH + 1
         this.type = type
         this.routeArray = routeArray
+
+        if (this.type == "rooms") this.bossRoom()
     }
 
     route(){
         return this.routeArray
     }
+
+    bossRoom(){
+        this.routeArray.push(
+        {   
+            id: "boss",
+            fight: {
+                id: 99,
+                encounter:{
+                    monsters: ['nodejs'],
+                    name: "bossfight",
+                    treasureAmount: null,
+                    treasureRarity: null
+                } 
+            },
+            id: 99,
+            room: {
+                background: "placeholder.jpg",
+                battlePercent: 100,
+                roomName: "bossRoom"
+            }
+        }
+    )}
 }
 
 //ASYNC CREATION OF OUR ROUTES, THEN EXPORTED INTO OUR GAME.JS
@@ -102,7 +126,7 @@ function classedMonsters(monsterarray){
     const classyMonsters = monsterarray.map(monstergroup=>{
         if (monstergroup == null) return null
         const monsterGroupWithClasses = monstergroup.map(monster=>{
-            return new Monster(monster?.name, monster?.hp, monster?.atk, monster?.def, monster?.img)
+            return new Monster(monster?.name, monster?.hp, monster?.atk, monster?.def, monster?.img, monster?.special)
         })
         return monsterGroupWithClasses
     })

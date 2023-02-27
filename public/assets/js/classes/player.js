@@ -75,7 +75,7 @@ export class Player{
         if (this.totalAtk < enemy.def){
             enemy.hp -= 1
         } else {
-            enemy.hp -= this.totalAtk + enemy.def 
+            enemy.hp = enemy.hp - this.totalAtk + enemy.def
         }
     }
 

@@ -4,9 +4,9 @@
         "encounter": {
             "name": "testEncounter",
             "monsters": [
-                "testMonster",
-                "testMonster",
-                "testMonster"
+                "html",
+                "html",
+                "html"
             ],
             "treasureRarity": "common",
             "treasureAmount": 1
@@ -17,7 +17,7 @@
         "encounter": {
             "name": "dsad",
             "monsters": [
-                "testMonster"
+                "html"
             ],
             "treasureRarity": "common",
             "treasureAmount": "2"
@@ -27,9 +27,18 @@
         "id": 2,
         "encounter": {
             "name": "testFight",
-            "monsters": ["slime"],
+            "monsters": ["css"],
             "treasureRarity": "common",
             "treasureAmount": "1"
+        }
+    },
+    {
+        "id": 3,
+        "encounter": {
+            "name": "testFight",
+            "monsters": ["css", "html"],
+            "treasureRarity": "common",
+            "treasureAmount": "2"
         }
     }
 ]
