@@ -5,7 +5,8 @@ export const playAnimation = (weapon, targetSprite) => {
         break;
         case "sword": slashAnimation(targetSprite)
         break;
-
+        case "bomb": explosionAnimation(targetSprite)
+        break;
         default: break;
     }
 }
@@ -33,4 +34,14 @@ function punctureAnimation(targetSprite){
     }, 400)
 }
 
+function explosionAnimation(targetSprite){
+    const animationDiv = document.createElement("div")
+    animationDiv.classList.add("explosionanimation")
+
+    targetSprite.append(animationDiv)
+
+    setInterval(()=>{
+        animationDiv.remove()
+    }, 400)
+}
 //////ALL ANIMATIONS HERE

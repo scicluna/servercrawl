@@ -17,6 +17,7 @@ export class Player{
         this.inventory = [
             new Item("knife", "weapon", "common", 1),
             new Item("potion", "healingConsumable", "common", null, null, null, 10),
+            new Item("bomb", "damageConsumable", "common", null, null, 5, null, null),
             {gp: this.gp}
         ]
         this.totalAtk = this.atk
@@ -62,6 +63,7 @@ export class Player{
     //handles looting items
     lootItem(item){
         this.inventory = [...this.inventory, item].flat(Infinity)
+        this.optimizeEquipment()
         return lootAcquired(item)
     }
 

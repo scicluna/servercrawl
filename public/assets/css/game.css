@@ -336,3 +336,32 @@ body{
 @keyframes puncture{
     to {opacity: 0%}
 }
+
+.explosionanimation{
+    position: absolute;
+    display: block;
+    height:50%;
+    width:50%;
+    left:30%;
+    background-image: url(../img/explosion.png);
+    transform-origin:left;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: explode .4s ease-in;
+}
+
+@keyframes explode{
+    0%{
+        transform: translateX(0)
+      }
+      25%{
+        transform: translateY(2px);
+      }
+        
+      50%{
+        transform: translateY(-2px);
+      }
+      100%{
+        transform: translateX(0px);
+      }
+  }

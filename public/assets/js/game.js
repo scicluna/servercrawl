@@ -308,7 +308,8 @@ function itemOptions(e){
     switch(item.type){
         case 'healingConsumable': useHealingConsumable(item)
         break;
-
+        case 'damageConsumable': useDamageConsumable(item)
+        break;
         default: break;
     }
 }
@@ -317,6 +318,20 @@ function useHealingConsumable(item){
     if (hero.hp + parseInt(item.heal) < hero.maxHp) {
         hero.hp += parseInt(item.heal)
     } else hero.hp = hero.maxHp
+    hero.consumeItem(item)
+    updateHp()
+    closeInventory()
+    if (routeMonsters.route()[pointer] != null) monsterRetaliation()
+}
+
+function useDamageConsumable(item){
+    const monsterSprites = document.querySelectorAll(".monsterSprite")
+    const monsters = routeMonsters.route()[pointer]
+
+    monsterSprites.forEach((monsterSprite, i) => {
+        playAnimation(item, monsterSprite)
+        monsters[i].hp -= parseInt(item.dmg)
+    })
     hero.consumeItem(item)
     updateHp()
     closeInventory()
@@ -557,10 +572,10 @@ function endScreen(message){
 function gameReset(){location.reload()}
 
 //TODO: 
-//IMPLEMENT ALL ITEM TYPES AND CREATE TEST ITEMS FOR THEM (healingConsumables, damageConsumables, weapon, armor)
-//ADD MORE MONSTER VARIETY
-//GIVE MONSTERS "SPECIAL" ATTACKS
+//ADD MORE MONSTER VARIETY (JSONS, JAVASCRIPT, MISSINGNO, HTML, CSS)
+//GIVE MONSTERS "SPECIAL" ATTACKS (STATUS ON THEIR ATTACKS? HOW THE FUCK DO I DO THIS)
 
-//MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs)
 //TWEEK NUMBERS
 //BOSS FIGHT 
+
+//MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs)

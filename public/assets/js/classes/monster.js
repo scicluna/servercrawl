@@ -16,7 +16,7 @@ export class Monster{
     //handles basic monster attacks
     attack(target){
         if (this.atk > target.def){
-            target.hp -= this.atk 
+            target.hp = target.hp - this.atk + target.def
         } else target.hp--
     }
 
@@ -24,5 +24,9 @@ export class Monster{
     isAlive(){
         if (this.hp > 0) return true
         else return false
+    }
+
+    specialAttack(target){
+
     }
 }

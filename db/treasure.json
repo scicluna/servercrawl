@@ -26,5 +26,47 @@
             "itemStatus": "",
             "value": 1
         }
+    },
+    {
+        "id": 2,
+        "item": {
+            "itemName": "bomb",
+            "itemType": "damageConsumable",
+            "itemRarity": "common",
+            "itemAtk": "",
+            "itemDef": "",
+            "itemDmg": "5",
+            "itemHeal": "",
+            "itemStatus": "",
+            "value": 2
+        }
+    },
+    {
+        "id": 3,
+        "item": {
+            "itemName": "sword",
+            "itemType": "weapon",
+            "itemRarity": "common",
+            "itemAtk": 2,
+            "itemDef": "",
+            "itemDmg": "",
+            "itemHeal": "",
+            "itemStatus": "",
+            "value": 3
+        }
+    },
+    {
+        "id": 4,
+        "item": {
+            "itemName": "shield",
+            "itemType": "armor",
+            "itemRarity": "common",
+            "itemAtk": "",
+            "itemDef": 1,
+            "itemDmg": "",
+            "itemHeal": "",
+            "itemStatus": "",
+            "value": 3
+        }
     }
 ]
