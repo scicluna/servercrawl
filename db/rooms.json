@@ -2,7 +2,7 @@
     {
         "id": 0,
         "room": {
-            "roomName": "testRoom",
+            "roomName": "testRoom1",
             "battlePercent": 50,
             "background": "placeholder.jpg"
         }
@@ -10,8 +10,8 @@
     {
         "id": 1,
         "room": {
-            "roomName": "testRoom",
-            "battlePercent": "45",
+            "roomName": "testRoom2",
+            "battlePercent": 55,
             "background": "placeholder.jpg"
         }
     },
@@ -19,7 +19,7 @@
         "id": 2,
         "room": {
             "roomName": "testRoom3",
-            "battlePercent": "30",
+            "battlePercent": 40,
             "background": "placeholder.jpg"
         }
     }

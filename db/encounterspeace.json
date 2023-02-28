@@ -43,9 +43,10 @@
             "options": [
                 "potion",
                 "potato",
-                "bomb"
+                "bomb",
+                "exit"
             ],
-            "outcomes": ""
+            "outcomes": [{"price": 3},{"price": 1},{"price": 3}]
         }
     },
     {

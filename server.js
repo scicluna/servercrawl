@@ -3,7 +3,7 @@ const express = require("express")
 const app = express()
 const PORT = process.env.port || 3001;
 const apiRouter = require("./routes/index")
-const admin = true
+const admin = false
 
 //boilerplate express
 app.use(express.urlencoded({extended: true}))

@@ -2,7 +2,7 @@
 import { Player } from "./classes/player.js"
 import { Item } from "./classes/item.js"
 import { Monster } from "./classes/monster.js"
-import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure, jsonMonsters, classedMonsters } from "./classes/route.js"
+import { routeRooms, routeTreasure, routeMonsters, generateTreasure, classedTreasure } from "./classes/route.js"
 import { playAnimation } from "./animations.js"
 
 //Testing
@@ -204,7 +204,6 @@ function handleAtk(){
     updateHp()
     monsterRetaliation()
     checkVictory()
-    
 }
 
 //updates the hp bars for both the player and the monsters
@@ -405,7 +404,12 @@ function generateOptions(){
     options.forEach(option=>{
         const optionDiv = document.createElement("div")
         optionDiv.classList.add("optiondiv")
-        optionDiv.innerText = option
+
+        const item = document.createElement("p")
+        item.classList.add("shopitem")
+        item.innerText = option
+
+        optionDiv.append(item)
         optionsDiv.append(optionDiv)
     })
     document.querySelector(".peaceblock").append(optionsDiv)
@@ -480,6 +484,7 @@ async function handleDialogueOption(e){
         console.log(`You have obtained a ${jsI.itemName}`)
         }
     })
+    if (!hero.isAlive()) endScreen("YOU HAVE DIED!")
     pointer++
     readyToDelve()
 }
@@ -487,8 +492,28 @@ async function handleDialogueOption(e){
 function initShop(){
     generateDescription()
     generateOptions()
+    generateCosts()
     generateStatus()
     initOptions(handleShop)
+}
+
+function generateCosts(){
+    const prices = routeRooms.route()[pointer].peace.encounter.outcomes
+    const optionsDiv = document.querySelectorAll(".optiondiv")
+
+    optionsDiv.forEach((option, i)=>{
+        const priceCheck = document.createElement("p")
+        priceCheck.classList.add("pricecheck")
+        priceCheck.innerText = prices[i]?.price || ""
+
+        option.append(priceCheck)
+    })
+
+    const currentWealth = document.createElement("h3")
+    currentWealth.classList.add("currentwealth")
+    currentWealth.innerText = `You have ${hero.gp} gp`
+
+    contentArea.append(currentWealth)
 }
 
 //handles shop option functionality
@@ -502,14 +527,19 @@ async function handleShop(e){
         hero.lootItem(new Item(jsI?.itemName, jsI?.itemType, jsI?.itemRarity, jsI?.itemAtk, jsI?.itemDef, jsI?.itemDmg, jsI?.itemHeal, jsI?.itemStatus, jsI?.value))
         //add "you obtained a *" message here if they obtained an item for now, just console logging it
         hero.gp -= jsI.value
+        document.querySelector(".currentwealth").innerText = hero.gp
         console.log(`You have obtained a ${jsI.itemName}`)
         }
         if (e.target.innerText.includes(jsI?.itemName) && hero.hp < jsI.value){
             console.log("NOT ENOUGH MONEY")
         }
     })
-    pointer++
-    readyToDelve()
+
+    if (e.target.innerText == "exit"){
+        pointer++
+        readyToDelve()
+    }
+
 }
 
 //What to do... Basically events tied to basic functions that hurt, heal, or give loot or a combination. How do we make these events and tie em to encounters?
@@ -603,8 +633,4 @@ function endScreen(message){
 function gameReset(){location.reload()}
 
 //TODO: 
-//TWEEK NUMBERS (room encounter/rates etc...)
-//SHOP INTERFACE REVAMP (display gold costs and current gold)
-//NEW TITLE PAGE (current one is ugly --- maybe one that looks like serverspace type scifi)
-
 //MORE OF EVERYTHING (4 entries for each encounter type, 4 monsters, 3 item types/5 items each, 3 more room configs) -- optional

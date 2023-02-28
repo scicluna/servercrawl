@@ -152,18 +152,35 @@ body{
 
 .optiondiv{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    height: 4vh;
+}
+
+.shopitem {
     background-color: rgba(0, 0, 0, 0.216);
     padding:5px;
     border-radius: 30%;
-    height: 4vh;
     font-size: 1.25rem;
 }
 
-.optiondiv:hover{
+.shopitem:hover{
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.543);
+}
+
+.pricecheck {
+    color: gold;
+}
+
+.currentwealth {
+    color: goldenrod;
+    position: absolute;
+    bottom: 0;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .itemcontainer{
